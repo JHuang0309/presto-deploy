@@ -29,7 +29,7 @@ function PageRegister({ setTokenFn }) {
 
     return (
         <>
-            <h2>Register</h2>
+            <h2 className="text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Register</h2>
             <form>
                 <div>
                     Email: 
@@ -37,6 +37,7 @@ function PageRegister({ setTokenFn }) {
                         type='email'
                         value={email}
                         onChange={e => setEmail(e.target.value)}
+                        className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                     />
                 </div>
                 <div>
@@ -45,6 +46,7 @@ function PageRegister({ setTokenFn }) {
                         type='password'
                         value={password}
                         onChange={e => setPassword(e.target.value)}
+                        className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                     />
                 </div>
                 <div>
@@ -53,9 +55,15 @@ function PageRegister({ setTokenFn }) {
                         type='text'
                         value={name}
                         onChange={e => setName(e.target.value)}
+                        className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                     />
                 </div>
-                <button onClick={register}>Register</button>
+                <button
+                    className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300"
+                    onClick={register}
+                > 
+                    Register
+                </button>
             </form>
         </>
     )

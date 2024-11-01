@@ -1,32 +1,51 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import { useState, useEffect } from 'react';
+import PageRegister from './pages/PageRegister.jsx';
+import PageLogin from './pages/PageLogin.jsx';
+import PageDashboard from './pages/PageDashboard.jsx';
+import Logout from './components/Logout.jsx';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  Navigate
+} from 'react-router-dom';
 
 function App() {
-  const [count, setCount] = useState(0);
-  
+
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    if (localStorage.getItem('token') != null) {
+      setToken(localStorage.getItem('token'));
+    }
+  }, []);
+
+
   return (
     <>
+      <BrowserRouter>
       <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer noopener">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer noopener">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        { token ? (
+          <>
+            <Link to="/dashboard">Dashboard</Link>
+            <Logout token={token} setTokenFn={setToken}/>
+          </>
+        ) : (
+          <>
+            <Link to="/register">Register</Link>
+            &nbsp;
+            <Link to="/login">Login</Link>
+          </>
+        )}  
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button id="counter" onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        <Routes>
+          <Route path="/" element={<Navigate to="/register" />} />
+          <Route path="/register" element={<PageRegister setTokenFn={setToken}/>} />
+          <Route path="/login" element={<PageLogin setTokenFn={setToken}/>}/>
+          <Route path="/dashboard" element={<PageDashboard />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

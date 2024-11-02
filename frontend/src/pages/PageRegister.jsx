@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom'; 
+import Alert from '../components/Alert.jsx'
 
 function PageRegister({ setTokenFn }) {
     const [email, setEmail] = useState('');
@@ -8,10 +9,21 @@ function PageRegister({ setTokenFn }) {
     const [confPassword, setConfPassword] = useState('');
     const [name, setName] = useState('');
 
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertType, setAlertType] = useState('error');
+    const [alertMsg, setAlertMsg] = useState('');
+
     const navigate = useNavigate();
 
-    const register = () => {
+    const register = (event) => {
+        event.preventDefault();
         // console.log(email, password, name);
+        if (!validInputs()) {
+            console.log('show alert')
+            setShowAlert(true);
+            return;
+        }
 
         axios.post('http://localhost:5005/admin/auth/register', {
             email: email,
@@ -24,12 +36,41 @@ function PageRegister({ setTokenFn }) {
             navigate('/dashboard');
         })
         .catch(res => {
-            console.log(res.response.data.error);
+            setAlertType('error');
+            setAlertMsg(res.response.data.error);
+            setShowAlert(true);
         })
+    }
+
+    const validInputs = () => {
+        //  check valid email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setAlertType('error');
+            setAlertMsg('Invalid email format');
+            return false;
+        }
+
+        // check passwords match
+        if (password != confPassword) {
+            setAlertType('error');
+            setAlertMsg('Passwords must match');
+            return false;
+        }
+
+        return true;
     }
 
     return (
         <>
+            {showAlert && (
+                <Alert 
+                    message={alertMsg}
+                    type={alertType}
+                    onClose={() => setShowAlert(false)}
+                />
+            )}
+
             <div className="mx-auto max-w-2xl text-center mt-10">
                 <h2 className="text-balance text-4xl font-semibold sm:text-5xl">Welcome to Presto!</h2>
                 <p className='mt-2 text-lg/8 text-gray-600'>Let's get you signed up</p>

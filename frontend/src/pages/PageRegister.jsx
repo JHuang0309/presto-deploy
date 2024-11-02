@@ -1,26 +1,46 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom'; 
-import Alert from '../components/Alert.jsx'
+import Alert from '../components/Alert.jsx';
 
 function PageRegister({ setTokenFn }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
     const [name, setName] = useState('');
-
-
     const [showAlert, setShowAlert] = useState(false);
     const [alertType, setAlertType] = useState('error');
     const [alertMsg, setAlertMsg] = useState('');
 
     const navigate = useNavigate();
 
+    const validInputs = () => {
+        // check for empty inputs
+        if (email == '' || password == '' || confPassword == '' || name == '') {
+            setAlertType('error');
+            setAlertMsg('Inputs cannot be empty');
+            return false;
+        }
+        //  check valid email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setAlertType('error');
+            setAlertMsg('Please input a valid email');
+            return false;
+        }
+        // check passwords match
+        if (password != confPassword) {
+            setAlertType('error');
+            setAlertMsg('Passwords must match');
+            return false;
+        }
+        return true;
+    }
+
     const register = (event) => {
         event.preventDefault();
         // console.log(email, password, name);
         if (!validInputs()) {
-            console.log('show alert')
             setShowAlert(true);
             return;
         }
@@ -40,25 +60,6 @@ function PageRegister({ setTokenFn }) {
             setAlertMsg(res.response.data.error);
             setShowAlert(true);
         })
-    }
-
-    const validInputs = () => {
-        //  check valid email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            setAlertType('error');
-            setAlertMsg('Invalid email format');
-            return false;
-        }
-
-        // check passwords match
-        if (password != confPassword) {
-            setAlertType('error');
-            setAlertMsg('Passwords must match');
-            return false;
-        }
-
-        return true;
     }
 
     return (

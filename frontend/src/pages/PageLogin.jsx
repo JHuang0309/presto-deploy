@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link  } from 'react-router-dom'; 
+import Alert from '../components/Alert.jsx';
 
 function PageLogin({ setTokenFn }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertType, setAlertType] = useState('error');
+    const [alertMsg, setAlertMsg] = useState('');
+
 
     const navigate = useNavigate();
 
-    const login = () => {
+    const login = (event) => {
+        event.preventDefault();
         // console.log(email, password);
 
         axios.post('http://localhost:5005/admin/auth/login', {
@@ -21,11 +27,20 @@ function PageLogin({ setTokenFn }) {
             navigate('/dashboard');
         })
         .catch(res => {
-            console.log(res.response.data.error);
+            setAlertType('error');
+            setAlertMsg(res.response.data.error);
+            setShowAlert(true);
         })
     }
     return (
         <>
+            {showAlert && (
+                <Alert 
+                    message={alertMsg}
+                    type={alertType}
+                    onClose={() => setShowAlert(false)}
+                />
+            )}
             <div className="mx-auto max-w-2xl text-center mt-10">
                 <h2 className="text-balance text-4xl font-semibold sm:text-5xl">Welcome Back!</h2>
                 <p className='mt-2 text-lg/8 text-gray-600'>Let's get you signed in</p>

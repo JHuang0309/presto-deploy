@@ -1185,6 +1185,33 @@ select {
   outline-color: #4f46e5;
 }
 
+/* .plus-sign {
+  width: 150px; 
+  height: 100px; 
+  background-color: #ccc; 
+  border-radius: 5px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plus-sign::before,
+.plus-sign::after {
+  content: "";
+  background-color: #fff;
+  position: absolute;
+  width: 30px; 
+  height: 5px; 
+}
+
+.plus-sign::before {
+  transform: rotate(0deg);
+}
+
+.plus-sign::after {
+  transform: rotate(-90deg);
+} */
+
 @media (min-width: 640px) {
   .sm\:mt-20 {
     margin-top: 5rem;

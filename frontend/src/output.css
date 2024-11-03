@@ -897,6 +897,10 @@ select {
   flex-grow: 1;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .items-center {
   align-items: center;
 }
@@ -1100,6 +1104,11 @@ select {
   line-height: 1.75rem;
 }
 
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
 .font-semibold {
   font-weight: 600;
 }
@@ -1233,6 +1242,11 @@ select {
 .focus\:border-indigo-500:focus {
   --tw-border-opacity: 1;
   border-color: rgb(99 102 241 / var(--tw-border-opacity));
+}
+
+.focus\:border-\[\#e4627d\]:focus {
+  --tw-border-opacity: 1;
+  border-color: rgb(228 98 125 / var(--tw-border-opacity));
 }
 
 .focus\:outline-none:focus {

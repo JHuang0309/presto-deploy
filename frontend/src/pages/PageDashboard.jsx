@@ -87,10 +87,8 @@ function PageDashboard({ token }) {
         <h3 className="text-balance text-3xl font-semibold my-4">
           My presentations
         </h3>
-        {/* Your existing code for displaying presentations */}
       </div>
 
-        {/* Modal for creating new presentation */}
       {isModalOpen && (
         <PresentationDetails
         isOpen={isModalOpen}

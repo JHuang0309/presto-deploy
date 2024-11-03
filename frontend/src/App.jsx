@@ -53,7 +53,7 @@ function App() {
           <Route path="/" element={<Navigate to="/register" />} />
           <Route path="/register" element={<PageRegister setTokenFn={setToken}/>} />
           <Route path="/login" element={<PageLogin setTokenFn={setToken}/>}/>
-          <Route path="/dashboard" element={<PageDashboard />} />
+          <Route path="/dashboard" element={<PageDashboard token={token}/>} />
         </Routes>
       </BrowserRouter>
     </>

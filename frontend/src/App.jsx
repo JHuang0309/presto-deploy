@@ -28,8 +28,13 @@ function App() {
       <div className='mx-auto flex justify-end p-6 lg:px-8'>
         { token ? (
           <>
-            <Link to="/dashboard">Dashboard</Link>
-            <Logout token={token} setTokenFn={setToken}/>
+            <Link
+              to="/dashboard"
+              className="rounded-md bg-[#e4627d] px-3.5 py-1.5 mx-1 text-center text-sm/6 font-semibold text-white shadow-sm hover:bg-[#eb7b91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition duration-300"
+            >Dashboard</Link>
+            <Logout 
+              token={token}
+              setTokenFn={setToken} />
           </>
         ) : (
           <>
@@ -48,7 +53,7 @@ function App() {
           <Route path="/" element={<Navigate to="/register" />} />
           <Route path="/register" element={<PageRegister setTokenFn={setToken}/>} />
           <Route path="/login" element={<PageLogin setTokenFn={setToken}/>}/>
-          <Route path="/dashboard" element={<PageDashboard />} />
+          <Route path="/dashboard" element={<PageDashboard token={token}/>} />
         </Routes>
       </BrowserRouter>
     </>

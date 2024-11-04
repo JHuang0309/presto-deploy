@@ -14,7 +14,7 @@ const Sidebar = () => {
 function PageCreate() {
     return (
         <>
-            <Header />
+            <Header title="presentation title" />
             <div className='flex'>
                 <div className=''>
                     {/* sidebar */}

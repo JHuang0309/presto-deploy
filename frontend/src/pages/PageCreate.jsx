@@ -29,7 +29,7 @@ function PageCreate() {
                     onClose={handleCloseModal}
                     isOpen={isModalOpen}
                 />
-            )};
+            )}
             <Header title="presentation title" />
             <div className='flex h-screen'>
                 {/* Main page body */}

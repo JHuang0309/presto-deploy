@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import PageRegister from './pages/PageRegister.jsx';
 import PageLogin from './pages/PageLogin.jsx';
 import PageDashboard from './pages/PageDashboard.jsx';
+import PageCreate from './pages/PageCreate.jsx';
 import Logout from './components/Logout.jsx';
 import {
   BrowserRouter,
@@ -54,6 +55,7 @@ function App() {
           <Route path="/register" element={<PageRegister setTokenFn={setToken}/>} />
           <Route path="/login" element={<PageLogin setTokenFn={setToken}/>}/>
           <Route path="/dashboard" element={<PageDashboard token={token}/>} />
+          <Route path="/create" element={<PageCreate />} />
         </Routes>
       </BrowserRouter>
     </>

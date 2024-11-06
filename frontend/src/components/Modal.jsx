@@ -5,31 +5,55 @@ import ModalTextInput from './ModalTextInput';
 import ModalVideoInput from './ModalVideoInput';
 import ModalCodeInput from './ModalCodeInput';
 
-// TODO create a unique add button for each modal type
 
-const Inputs = ({type}) => {
+const Inputs = ({type, updateUserInput}) => {
     if (type == 'textbox') {
         return (
-            <ModalTextInput />
+            <ModalTextInput updateUserInput={updateUserInput}/>
         );
     } else if (type == 'image') {
         return (
-            <ModalImageInput />
+            <ModalImageInput updateUserInput={updateUserInput}/>
         );
     } else if (type == 'video') {
         return (
-            <ModalVideoInput />
+            <ModalVideoInput updateUserInput={updateUserInput}/>
         );
     } else if (type == 'code') {
         return (
-            <ModalCodeInput />
+            <ModalCodeInput updateUserInput={updateUserInput}/>
         );
     } else {
-
+        console.log(`Error unknown add element button: ${type}`)
     }
 }
 
-const Modal = ({ type, onClose, isOpen }) => {
+const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode }) => {
+
+    const [userInput, setUserInput] = useState({});
+    const updateUserInput = (value) => {
+        setUserInput(value);
+    };
+
+    const handleAddElement = (type) => {
+        console.log(type);
+        if (type == 'textbox') {
+            addTextbox(userInput);
+            onClose();
+        } else if (type == 'image') {
+            addImage(userInput);
+            onClose();
+        } else if (type == 'video') {
+            addVideo(userInput);
+            onClose();
+        } else if (type == 'code') {
+            addCode(userInput);
+            onClose();
+        } else {
+            console.log(`Error unknown element type: ${type}`)
+        }
+    }
+
     return (
         <Dialog open={isOpen} onClose={onClose} className="relative z-10">
         <DialogBackdrop
@@ -49,14 +73,14 @@ const Modal = ({ type, onClose, isOpen }) => {
                         <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
                             Add {type}
                         </DialogTitle>
-                        <Inputs type={type} />
+                        <Inputs type={type} updateUserInput={updateUserInput}/>
                     </div>
                 </div>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 justify-between">
                 <button
                     type="button"
-                    onClick={onClose}
+                    onClick={() => handleAddElement(type)}
                     className="inline-flex w-full justify-center rounded-md bg-[#e4627d] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#eb7b91] sm:ml-3 sm:w-auto"
                 >
                     Add

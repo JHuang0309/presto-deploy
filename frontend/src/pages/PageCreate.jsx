@@ -21,6 +21,33 @@ function PageCreate() {
         setIsModalOpen(false);
     }
 
+    // Pass in list of elements as the default instead of the empty list []
+    const [slideElements, setSlideElements] = useState([])
+    const handleAddTextbox = ({width, height, text, size, colour}) => {
+        setSlideElements(elems => [
+            ...elems,
+            <Textbox width={width} height={height} text={text} size={size} colour={colour} />
+        ])
+    }
+    const handleAddImage = ({width, height, image, description}) => {
+        setSlideElements(elems => [
+            ...elems,
+            <Textbox width={width} height={height} image={image} description={description} />
+        ])
+    }
+    const handleAddVideo = ({width, height, url, autoplay}) => {
+        setSlideElements(elems => [
+            ...elems,
+            <Textbox width={width} height={height} url={url} autoplay={autoplay} />
+        ])
+    }
+    const handleAddCode = ({width, height, code, size}) => {
+        setSlideElements(elems => [
+            ...elems,
+            <Textbox width={width} height={height} code={code} size={size} />
+        ])
+    }
+
     return (
         <>
             {isModalOpen && (
@@ -28,6 +55,10 @@ function PageCreate() {
                     type={modalType}
                     onClose={handleCloseModal}
                     isOpen={isModalOpen}
+                    addTextbox={handleAddTextbox}
+                    addImage={handleAddImage}
+                    addVideo={handleAddVideo}
+                    addCode={handleAddCode}
                 />
             )}
             <Header title="presentation title" />

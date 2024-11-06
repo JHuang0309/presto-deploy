@@ -1,10 +1,22 @@
 import { useState } from 'react';
 
-const ModalVideoInput = () => {
+const ModalVideoInput = ({ updateUserInput }) => {
+
+    const handleInput = (event) => {
+        const { name, value } = event.target;
+        updateUserInput(prevInput => ({
+            ...prevInput,
+            [name]: value
+        }));
+    }
 
     const [autoPlay, setAutoPlay] = useState(false);
     const handleToggle = () => {
         setAutoPlay(!autoPlay);
+        updateUserInput(prevInput => ({
+            ...prevInput,
+            'autoplay': !autoPlay
+        }));
     };
 
     return (
@@ -17,6 +29,7 @@ const ModalVideoInput = () => {
                 id="width"
                 name="width"
                 type="text"
+                onChange={handleInput}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#e4627d] sm:text-sm/6"
                 />
             </div>
@@ -28,17 +41,19 @@ const ModalVideoInput = () => {
                 id="height"
                 name="height"
                 type="text"
+                onChange={handleInput}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#e4627d] sm:text-sm/6"
                 />
             </div>
             <div className="sm:col-span-6">
-                <label htmlFor="image" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="url" className="block text-sm/6 font-medium text-gray-900">
                     Youtube Video URL
                 </label>
                     <input
-                    id="image"
-                    name="image"
+                    id="url"
+                    name="url"
                     type="text"
+                    onChange={handleInput}
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#e4627d] sm:text-sm/6"
                     placeholder="Enter a YouTube video URL here..."
                     />

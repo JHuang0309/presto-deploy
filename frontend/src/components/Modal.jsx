@@ -36,7 +36,6 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode 
     };
 
     const handleAddElement = (type) => {
-        console.log(type);
         if (type == 'textbox') {
             addTextbox(userInput);
             onClose();
@@ -44,6 +43,7 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode 
             addImage(userInput);
             onClose();
         } else if (type == 'video') {
+            console.log(userInput);
             addVideo(userInput);
             onClose();
         } else if (type == 'code') {

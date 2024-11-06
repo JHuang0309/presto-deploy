@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-const ModalTextInput = ({updateUserInput}) => {
+const ModalTextInput = ({ updateUserInput }) => {
 
     const handleInput = (event) => {
-        const { key, value } = event.target;
+        const { name, value } = event.target;
         updateUserInput(prevInput => ({
             ...prevInput,
-            [key]: value
+            [name]: value
         }));
     }
 

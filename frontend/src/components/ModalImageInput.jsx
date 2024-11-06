@@ -1,23 +1,45 @@
 import { useState } from 'react';
 
-const ModalImageInput = () => {
+const ModalImageInput = ({ updateUserInput }) => {
     const [url, setUrl] = useState('');
     const [file, setFile] = useState(null);
     const [base64String, setBase64String] = useState('');
 
+    const handleInput = (event) => {
+        const { name, value } = event.target;
+        updateUserInput(prevInput => ({
+            ...prevInput,
+            [name]: value
+        }));
+    }
+
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
-            const reader = new FileRead();
+            setUrl('');
+            setFile(selectedFile);
+
+            const reader = new FileReader();
             reader.onloadend = () => {
-                setBase64String(reader.result);
+                const base64 = reader.result;
+                setBase64String(base64);
+                updateUserInput(prevInput => ({
+                    ...prevInput,
+                    'image': base64
+                }));
             };
             reader.readAsDataURL(selectedFile);
         }
     }
 
     const handleUrlChange = (event) => {
-        setUrl(event.target.value);
+        const newUrl = event.target.value;
+        setUrl(newUrl);
+        setFile(null);
+        setBase64String('');
+        if (newUrl) {
+            handleConvertUrlToBase64(newUrl);
+        }
     }
 
     const handleConvertUrlToBase64 = async () => {
@@ -26,7 +48,12 @@ const ModalImageInput = () => {
             const blob = await response.blob();
             const reader = new FileReader();
             reader.onloadend = () => {
-                setBase64String(reader.result);
+                const base64 = reader.result;
+                setBase64String(base64);
+                updateUserInput(prevInput => ({
+                    ...prevInput,
+                    'image': base64
+                }));
             };
             reader.readAsDataURL(blob);
         } catch (error) {
@@ -44,6 +71,7 @@ const ModalImageInput = () => {
                 id="width"
                 name="width"
                 type="text"
+                onChange={handleInput}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#e4627d] sm:text-sm/6"
                 />
             </div>
@@ -55,6 +83,7 @@ const ModalImageInput = () => {
                 id="height"
                 name="height"
                 type="text"
+                onChange={handleInput}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#e4627d] sm:text-sm/6"
                 />
             </div>
@@ -75,7 +104,6 @@ const ModalImageInput = () => {
                     id="image-file"
                     name="image-file"
                     type="file"
-                    value={url}
                     accept="image/*"
                     onChange={handleFileChange}
                     className='text-sm'
@@ -89,6 +117,7 @@ const ModalImageInput = () => {
                 id="description"
                 name="description"
                 type="text"
+                onChange={handleInput}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#e4627d] sm:text-sm/6"
                 />
             </div>           

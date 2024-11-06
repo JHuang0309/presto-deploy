@@ -37,6 +37,7 @@ function PageDashboard({ token }) {
                 setStore(response.data.store);
             }) 
             . catch(function (error) {
+                // TODO: redirect to login and display a component alert
                 alert(error.response.data.error);
             });
         }

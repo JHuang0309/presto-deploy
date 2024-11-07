@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Header from '../components/Header';
 import Slide from '../components/Slide';
 import Modal from '../components/Modal';
@@ -25,6 +24,13 @@ function PageCreate() {
         setIsModalOpen(false);
     }
 
+    // Replace empty object with slide properties
+    const [slideFormat, setSlideFormat] = useState({})
+    const handleAddFormat = (formatObject) => {
+        // console.log(props);
+        setSlideFormat(formatObject);
+    }
+
     // Pass in list of elements as the default instead of the empty list []
     const [slideElements, setSlideElements] = useState([])
     const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
@@ -47,7 +53,6 @@ function PageCreate() {
         ])
     }
     const handleAddCode = ({width, height, text, fontSize}) => {
-        console.log(width, height, text, fontSize);
         setSlideElements(elems => [
             ...elems,
             <Code width={width} height={height} code={text} size={fontSize} />
@@ -65,6 +70,7 @@ function PageCreate() {
                     addImage={handleAddImage}
                     addVideo={handleAddVideo}
                     addCode={handleAddCode}
+                    addFormat={handleAddFormat}
                 />
             )}
             <Header title="presentation title" />
@@ -129,7 +135,9 @@ function PageCreate() {
                             </button>
                         </div>
                         <div className='mt-auto'>
-                            <button className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 w-full mb-2 xs:text-xs sm:text-xs md:text-sm'>
+                            <button 
+                                onClick={() => handleOpenModal('background-format')}
+                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 w-full mb-2 xs:text-xs sm:text-xs md:text-sm'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-1">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
                                 </svg>
@@ -151,7 +159,7 @@ function PageCreate() {
                     )}
                 </button>
                 <div className='flex-1 bg-gray-100 overflow-auto flex flex-col'>
-                    <Slide elements={slideElements}/>
+                    <Slide elements={slideElements} format={slideFormat}/>
                     <div className='bg-white border-t-2 border-gray-300 shadow-sm p-4 flex flex-1 items-start min-w-[340px] justify-between'>
                         <div>
                             <button className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200'>

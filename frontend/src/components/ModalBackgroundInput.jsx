@@ -13,7 +13,53 @@ const ModalBackgroundInput = ({ updateUserInput }) => {
         }));
     }
 
-    
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            setUrl('');
+            setFile(selectedFile);
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result;
+                setBase64String(base64);
+                updateUserInput(prevInput => ({
+                    ...prevInput,
+                    'image': base64
+                }));
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+    }
+
+    const handleUrlChange = (event) => {
+        const newUrl = event.target.value;
+        setUrl(newUrl);
+        setFile(null);
+        setBase64String('');
+        if (newUrl) {
+            handleConvertUrlToBase64(newUrl);
+        }
+    }
+
+    const handleConvertUrlToBase64 = async () => {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result;
+                setBase64String(base64);
+                updateUserInput(prevInput => ({
+                    ...prevInput,
+                    'image': base64
+                }));
+            };
+            reader.readAsDataURL(blob);
+        } catch (error) {
+            console.error('Error fetching the image:', error);
+        }
+    };
 
     const [style, setStyle] = useState('');
     const [styleInputs, setStyleInputs] = useState(null);

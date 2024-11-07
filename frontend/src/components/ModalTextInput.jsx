@@ -60,7 +60,7 @@ const ModalTextInput = ({ updateUserInput }) => {
                 name="fontSize"
                 type="text"
                 onChange={handleInput}
-                placeholder='e.g. 1'
+                placeholder='1.0'
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#e4627d] sm:text-sm/6"
                 />
             </div>
@@ -73,7 +73,7 @@ const ModalTextInput = ({ updateUserInput }) => {
                 name="colour"
                 type="text"
                 onChange={handleInput}
-                placeholder='e.g. ffffff'
+                placeholder='#FFFFFF'
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#e4627d] sm:text-sm/6"
                 />
             </div>

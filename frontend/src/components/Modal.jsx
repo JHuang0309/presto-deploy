@@ -4,6 +4,7 @@ import ModalImageInput from './ModalImageInput';
 import ModalTextInput from './ModalTextInput';
 import ModalVideoInput from './ModalVideoInput';
 import ModalCodeInput from './ModalCodeInput';
+import ModalBackgroundInput from './ModalBackgroundInput';
 
 
 const Inputs = ({type, updateUserInput}) => {
@@ -23,12 +24,16 @@ const Inputs = ({type, updateUserInput}) => {
         return (
             <ModalCodeInput updateUserInput={updateUserInput}/>
         );
+    } else if (type == 'background-format') {
+        return (
+            <ModalBackgroundInput updateUserInput={updateUserInput}/>
+        );
     } else {
         console.log(`Error unknown add element button: ${type}`)
     }
 }
 
-const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode }) => {
+const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat }) => {
 
     const [userInput, setUserInput] = useState({});
     const updateUserInput = (value) => {
@@ -43,11 +48,13 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode 
             addImage(userInput);
             onClose();
         } else if (type == 'video') {
-            console.log(userInput);
             addVideo(userInput);
             onClose();
         } else if (type == 'code') {
             addCode(userInput);
+            onClose();
+        } else if (type == 'background-format') {
+            addFormat(userInput);
             onClose();
         } else {
             console.log(`Error unknown element type: ${type}`)

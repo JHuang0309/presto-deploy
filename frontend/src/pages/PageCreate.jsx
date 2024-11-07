@@ -3,6 +3,10 @@ import axios from 'axios';
 import Header from '../components/Header';
 import Slide from '../components/Slide';
 import Modal from '../components/Modal';
+import Textbox from '../components/Textbox';
+import Code from '../components/Code';
+import Image from '../components/Image';
+import Video from '../components/Video';
 
 function PageCreate() {
 
@@ -23,28 +27,30 @@ function PageCreate() {
 
     // Pass in list of elements as the default instead of the empty list []
     const [slideElements, setSlideElements] = useState([])
-    const handleAddTextbox = ({width, height, text, size, colour}) => {
+    const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
+        // console.log(width, height, text, fontSize, colour);
         setSlideElements(elems => [
             ...elems,
-            <Textbox width={width} height={height} text={text} size={size} colour={colour} />
+            <Textbox width={width} height={height} text={text} size={fontSize} colour={colour} />
         ])
     }
     const handleAddImage = ({width, height, image, description}) => {
         setSlideElements(elems => [
             ...elems,
-            <Textbox width={width} height={height} image={image} description={description} />
+            <Image width={width} height={height} image={image} description={description} />
         ])
     }
     const handleAddVideo = ({width, height, url, autoplay}) => {
         setSlideElements(elems => [
             ...elems,
-            <Textbox width={width} height={height} url={url} autoplay={autoplay} />
+            <Video width={width} height={height} url={url} autoplay={autoplay} />
         ])
     }
-    const handleAddCode = ({width, height, code, size}) => {
+    const handleAddCode = ({width, height, text, fontSize}) => {
+        console.log(width, height, text, fontSize);
         setSlideElements(elems => [
             ...elems,
-            <Textbox width={width} height={height} code={code} size={size} />
+            <Code width={width} height={height} code={text} size={fontSize} />
         ])
     }
 
@@ -145,7 +151,7 @@ function PageCreate() {
                     )}
                 </button>
                 <div className='flex-1 bg-gray-100 overflow-auto flex flex-col'>
-                    <Slide />
+                    <Slide elements={slideElements}/>
                     <div className='bg-white border-t-2 border-gray-300 shadow-sm p-4 flex flex-1 items-start min-w-[340px] justify-between'>
                         <div>
                             <button className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200'>

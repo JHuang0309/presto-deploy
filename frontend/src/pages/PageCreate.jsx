@@ -43,7 +43,6 @@ function PageCreate() {
     // Pass in list of elements as the default instead of the empty list []
     const [slideElements, setSlideElements] = useState([])
     const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
-        // console.log(width, height, text, fontSize, colour);
         setSlideElements(elems => [
             ...elems,
             <Textbox width={width} height={height} text={text} size={fontSize} colour={colour} />
@@ -191,7 +190,18 @@ function PageCreate() {
                                 </svg>
                                 Rearrange slides
                             </button>
-                            <button className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200 flex items-center'>
+                            <button 
+                                className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200 flex items-center'
+                                onClick={() => {
+                                    const data = {
+                                        elements: JSON.stringify(slideElements),
+                                        format: JSON.stringify(slideFormat),
+                                        slideNum: 1
+                                    };
+                                    const queryString = new URLSearchParams(data).toString();
+                                    window.open(`/preview?${queryString}`, '_blank');
+                                }}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-1">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
                                 </svg>

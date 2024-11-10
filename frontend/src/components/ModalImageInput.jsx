@@ -3,7 +3,6 @@ import { useState } from 'react';
 const ModalImageInput = ({ updateUserInput }) => {
     const [url, setUrl] = useState('');
     const [file, setFile] = useState(null);
-    const [base64String, setBase64String] = useState('');
 
     const handleInput = (event) => {
         const { name, value } = event.target;
@@ -18,11 +17,9 @@ const ModalImageInput = ({ updateUserInput }) => {
         if (selectedFile) {
             setUrl('');
             setFile(selectedFile);
-
             const reader = new FileReader();
             reader.onloadend = () => {
                 const base64 = reader.result;
-                setBase64String(base64);
                 updateUserInput(prevInput => ({
                     ...prevInput,
                     'image': base64
@@ -36,20 +33,18 @@ const ModalImageInput = ({ updateUserInput }) => {
         const newUrl = event.target.value;
         setUrl(newUrl);
         setFile(null);
-        setBase64String('');
         if (newUrl) {
             handleConvertUrlToBase64(newUrl);
         }
     }
 
-    const handleConvertUrlToBase64 = async () => {
+    const handleConvertUrlToBase64 = async (url) => {
         try {
             const response = await fetch(url);
             const blob = await response.blob();
             const reader = new FileReader();
             reader.onloadend = () => {
                 const base64 = reader.result;
-                setBase64String(base64);
                 updateUserInput(prevInput => ({
                     ...prevInput,
                     'image': base64
@@ -89,7 +84,7 @@ const ModalImageInput = ({ updateUserInput }) => {
             </div>
             <div className="sm:col-span-3">
                 <label htmlFor="image" className="block text-sm/6 font-medium text-gray-900">
-                    Image 
+                    Enter Image 
                 </label>
                     <input
                     id="image"

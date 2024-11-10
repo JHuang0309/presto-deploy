@@ -5,6 +5,7 @@ import ModalTextInput from './ModalTextInput';
 import ModalVideoInput from './ModalVideoInput';
 import ModalCodeInput from './ModalCodeInput';
 import ModalBackgroundInput from './ModalBackgroundInput';
+import Alert from './Alert';
 
 
 const Inputs = ({type, updateUserInput}) => {
@@ -34,16 +35,42 @@ const Inputs = ({type, updateUserInput}) => {
 }
 
 const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat }) => {
-
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertType, setAlertType] = useState('alert');
+    const [alertMsg, setAlertMsg] = useState('');
     const [userInput, setUserInput] = useState({});
     const updateUserInput = (value) => {
         setUserInput(value);
     };
 
+    const closeModal = () => {
+        if (!showAlert) onClose();
+    }
+
+    const handleInvalidInputs = (alertMessage) => {
+        setAlertType('alert');
+        setAlertMsg(alertMessage);
+        setShowAlert(true);
+    }
+
     const handleAddElement = (type) => {
+        const isValidHex = (hex) => /^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
         if (type == 'textbox') {
-            addTextbox(userInput);
-            onClose();
+            const { width, height, text, fontSize, colour } = userInput;
+            if (width <= 0 || width == undefined) {
+                handleInvalidInputs('Invalid width. Width must be at greater than 0px');
+            } else if (height <= 0 || height == undefined) {
+                handleInvalidInputs('Invalid height. Height must be at greater than 0px');
+            } else if (text == undefined) {
+                handleInvalidInputs('Invalid text. Text cannot be empty');
+            } else if (fontSize <= 0 || fontSize == undefined) {
+                handleInvalidInputs('Invalid font size. Font size must be greater than 0');
+            } else if (!isValidHex(colour)) {
+                handleInvalidInputs('Invalid colour. Please enter a valid hex color.');
+            } else {
+                addTextbox(userInput);
+                onClose();
+            }
         } else if (type == 'image') {
             addImage(userInput);
             onClose();
@@ -57,18 +84,26 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
             addFormat(userInput);
             onClose();
         } else {
-            console.log(`Error unknown element type: ${type}`)
+            handleInvalidInputs('Error unknown element type')
         }
     }
 
     return (
-        <Dialog open={isOpen} onClose={onClose} className="relative z-10">
+
+        <Dialog open={isOpen} onClose={closeModal} className="relative z-10">
         <DialogBackdrop
             transition
             className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
         />
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            {showAlert && (
+                <Alert 
+                    message={alertMsg}
+                    type={alertType}
+                    onClose={() => setShowAlert(false)}
+                />
+            )}
             <div className="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
             <DialogPanel
                 transition

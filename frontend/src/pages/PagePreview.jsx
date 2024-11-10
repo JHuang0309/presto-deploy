@@ -7,7 +7,7 @@ function PagePreview() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
 
-    const elements = JSON.parse(decodeURIComponent(queryParams.get('elements')))[0].props;
+    const elements = JSON.parse(decodeURIComponent(queryParams.get('elements')));
     const format = JSON.parse(decodeURIComponent(queryParams.get('format')));
     const slideNumber = queryParams.get('slideNum');
 

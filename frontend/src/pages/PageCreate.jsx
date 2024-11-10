@@ -41,6 +41,7 @@ function PageCreate() {
     }
 
     // Pass in list of elements as the default instead of the empty list []
+    // Add a useEffect to store all slideElements to the store
     const [slideElements, setSlideElements] = useState([])
     const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
         setSlideElements(elems => [

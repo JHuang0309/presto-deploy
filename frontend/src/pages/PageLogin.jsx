@@ -13,8 +13,7 @@ function PageLogin({ setTokenFn }) {
 
     const navigate = useNavigate();
 
-    const [token, setToken] = useState(null);
-    // Redirect to users dashboard
+    // Redirect to users dashboard if already logged in
     useEffect(() => {
         if (localStorage.getItem('token') != null) {
             navigate('/dashboard');

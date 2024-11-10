@@ -3,6 +3,7 @@ import PageRegister from './pages/PageRegister.jsx';
 import PageLogin from './pages/PageLogin.jsx';
 import PageDashboard from './pages/PageDashboard.jsx';
 import PageCreate from './pages/PageCreate.jsx';
+import PagePreview from './pages/PagePreview.jsx';
 import Logout from './components/Logout.jsx';
 import {
   BrowserRouter,
@@ -56,6 +57,7 @@ function App() {
           <Route path="/login" element={<PageLogin setTokenFn={setToken}/>}/>
           <Route path="/dashboard" element={<PageDashboard token={token}/>} />
           <Route path="/create" element={<PageCreate />} />
+          <Route path="/preview" element={<PagePreview />} />
         </Routes>
       </BrowserRouter>
     </>

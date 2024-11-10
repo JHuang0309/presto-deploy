@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from "vitest";
 import PageLogin from '../pages/PageLogin';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
+import Alert from '../components/Alert';
 import axios from 'axios';
 
 vi.mock('react-router-dom', async () => {
@@ -76,5 +77,31 @@ describe("Login test", () => {
             expect(mockSetTokenFn).toHaveBeenCalledWith('mockToken');
             expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
          });
-      });
+    });
+    it("shows an error alert on failed login", async () => {
+        axios.post.mockRejectedValue({
+          response: {
+            data: { error: 'Invalid credentials' },
+          },
+        });
+    
+        render(
+          <BrowserRouter>
+            <PageLogin setTokenFn={mockSetTokenFn} />
+          </BrowserRouter>
+        );
+    
+        // Enter login credentials
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
+        fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'wrongpassword' } });
+    
+        // Click login button
+        fireEvent.click(screen.getByRole('button', { name: /login/i }));
+    
+        // Wait for the async login process to complete and Alert to show
+        await waitFor(() => {
+          expect(axios.post).toHaveBeenCalled();
+          expect(screen.getByText('Invalid email or password')).toBeInTheDocument();
+        });
+    });
 });

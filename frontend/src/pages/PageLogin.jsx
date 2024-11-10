@@ -35,7 +35,7 @@ function PageLogin({ setTokenFn }) {
         })
         .catch(res => {
             setAlertType('error');
-            setAlertMsg(res.response.data.error);
+            setAlertMsg('Invalid email or password');
             setShowAlert(true);
         })
     }

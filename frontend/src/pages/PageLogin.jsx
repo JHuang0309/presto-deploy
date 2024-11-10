@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link  } from 'react-router-dom'; 
 import Alert from '../components/Alert.jsx';
@@ -12,6 +12,14 @@ function PageLogin({ setTokenFn }) {
 
 
     const navigate = useNavigate();
+
+    const [token, setToken] = useState(null);
+    // Redirect to users dashboard
+    useEffect(() => {
+        if (localStorage.getItem('token') != null) {
+            navigate('/dashboard');
+        }
+    }, [navigate]);
 
     const login = (event) => {
         event.preventDefault();

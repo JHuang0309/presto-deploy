@@ -13,6 +13,12 @@ function PageRegister({ setTokenFn }) {
     const [alertMsg, setAlertMsg] = useState('');
 
     const navigate = useNavigate();
+    // Redirect to users dashboard if already logged in
+    useEffect(() => {
+        if (localStorage.getItem('token') != null) {
+            navigate('/dashboard');
+        }
+    }, [navigate]);
 
     const validInputs = () => {
         // check for empty inputs

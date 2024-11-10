@@ -6,8 +6,17 @@ import Textbox from '../components/Textbox';
 import Code from '../components/Code';
 import Image from '../components/Image';
 import Video from '../components/Video';
+import { useNavigate } from 'react-router-dom';
 
 function PageCreate() {
+
+    const [token, setToken] = useState(null);
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (localStorage.getItem('token') == null) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const [isOpen, setIsOpen] = useState(true);
     const toggleSidebar = () => {

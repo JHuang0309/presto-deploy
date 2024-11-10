@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PresentationDetails from '../components/PresentationDetails.jsx';
+import { useNavigate } from 'react-router-dom';
 
 function PageDashboard({ token }) {
   const [store, setStore] = useState(null);
@@ -9,6 +10,13 @@ function PageDashboard({ token }) {
     title: "",
     description: "",
   });
+
+  const navigate = useNavigate();
+  useEffect(() => {
+      if (localStorage.getItem('token') == null) {
+          navigate('/login');
+      }
+  }, [navigate]);
 
   const setStoreFn = (newStore) => {
     axios.put(

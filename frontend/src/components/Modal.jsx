@@ -61,7 +61,7 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
                 handleInvalidInputs('Invalid width. Width must be at greater than 0px');
             } else if (height <= 0 || height == undefined) {
                 handleInvalidInputs('Invalid height. Height must be at greater than 0px');
-            } else if (text == undefined) {
+            } else if (text == undefined || text == '') {
                 handleInvalidInputs('Invalid text. Text cannot be empty');
             } else if (fontSize <= 0 || fontSize == undefined) {
                 handleInvalidInputs('Invalid font size. Font size must be greater than 0');
@@ -72,17 +72,74 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
                 onClose();
             }
         } else if (type == 'image') {
-            addImage(userInput);
-            onClose();
+            const {width, height, image, description} = userInput;
+            if (width <= 0 || width == undefined) {
+                handleInvalidInputs('Invalid width. Width must be at greater than 0px');
+            } else if (height <= 0 || height == undefined) {
+                handleInvalidInputs('Invalid height. Height must be at greater than 0px');
+            } else if (image == undefined || image == '') {
+                handleInvalidInputs('Invalid image. Image cannot be empty');
+            } else if (description == undefined || description == '') {
+                handleInvalidInputs('Invalid description. Description cannot be empty');
+            } else {
+                addImage(userInput);
+                onClose();
+            }
         } else if (type == 'video') {
-            addVideo(userInput);
-            onClose();
+            const {width, height, url, autoplay} = userInput;
+            if (width <= 0 || width == undefined) {
+                handleInvalidInputs('Invalid width. Width must be at greater than 0px');
+            } else if (height <= 0 || height == undefined) {
+                handleInvalidInputs('Invalid height. Height must be at greater than 0px');
+            } else if (url == undefined || url == '') {
+                handleInvalidInputs('Invalid url. Url cannot be empty');
+            } else if (fontSize <= 0 || fontSize == undefined) {
+                handleInvalidInputs('Invalid font size. Font size must be greater than 0');
+            } else {
+                addVideo(userInput);
+                onClose();   
+            }
+            
         } else if (type == 'code') {
-            addCode(userInput);
-            onClose();
+            const {width, height, text, fontSize} = userInput;
+            if (width <= 0 || width == undefined) {
+                handleInvalidInputs('Invalid width. Width must be at greater than 0px');
+            } else if (height <= 0 || height == undefined) {
+                handleInvalidInputs('Invalid height. Height must be at greater than 0px');
+            } else if (text == undefined || text == '') {
+                handleInvalidInputs('Invalid code. Code cannot be empty');
+            } else if (fontSize <= 0 || fontSize == undefined) {
+                handleInvalidInputs('Invalid font size. Font size must be greater than 0');    
+            } else {
+                addCode(userInput);
+                onClose();   
+            }
         } else if (type == 'background-format') {
+            if (userInput.format == 'solid') {
+                if (!isValidHex(userInput.colour)) {
+                    handleInvalidInputs('Invalid colour. Please enter a valid hex color.');
+                    return;
+                }
+            } else if (userInput.format == 'gradient') {
+                if (!isValidHex(userInput.startColour)) {
+                    handleInvalidInputs('Invalid start colour. Please enter a valid hex color.');
+                    return;
+                } else if (!isValidHex(userInput.endColour)) {
+                    handleInvalidInputs('Invalid end colour. Please enter a valid hex color.');
+                    return;
+                }
+            } else if (userInput.format == 'image') {
+                if (userInput.image == undefined) {
+                    handleInvalidInputs('Invalid image url. Please input a valid image.');
+                    return;
+                }
+            } else if (userInput.format == undefined) {    
+                handleInvalidInputs('Invalid background format. Select a format type');
+                return;
+            }
             addFormat(userInput);
             onClose();
+            
         } else {
             handleInvalidInputs('Error unknown element type')
         }

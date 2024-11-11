@@ -38,7 +38,7 @@ const ModalTextInput = ({ updateUserInput }) => {
             </div>
             <div className="sm:col-span-6">
                 <label htmlFor="text" className="block text-sm/6 font-medium text-gray-900">
-                    Text
+                    Enter text
                 </label>
                     <textarea
                     id="text"

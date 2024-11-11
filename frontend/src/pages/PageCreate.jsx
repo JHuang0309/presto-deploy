@@ -8,6 +8,33 @@ import Image from '../components/Image';
 import Video from '../components/Video';
 import { useNavigate } from 'react-router-dom';
 
+const example_presentation = {
+    id: 0,
+    title: 'example preso',
+    slides: [
+        {
+            id: 1,
+            format: {},
+            elements: ['a', 'b']
+        },
+        {
+            id: 2,
+            format: {},
+            elements: ['c', 'd']
+        },
+        {
+            id: 3,
+            format: {},
+            elements: ['e', 'f']
+        },
+        {
+            id: 4,
+            format: {},
+            elements: ['g', 'h']
+        },
+    ]
+}
+
 function PageCreate() {
 
     const [token, setToken] = useState(null);
@@ -33,15 +60,17 @@ function PageCreate() {
         setIsModalOpen(false);
     }
 
+    const [slideIndex, setSlideIndex] = useState(1)
+
     // Replace empty object with slide properties
-    const [slideFormat, setSlideFormat] = useState({})
+    const [slideFormat, setSlideFormat] = useState(example_presentation.slides[slideIndex].format)
     const handleAddFormat = (formatObject) => {
-        // console.log(props);
         setSlideFormat(formatObject);
     }
 
     // Pass in list of elements as the default instead of the empty list []
-    const [slideElements, setSlideElements] = useState([])
+    // Add a useEffect to store all slideElements to the store
+    const [slideElements, setSlideElements] = useState(example_presentation.slides[slideIndex].elements)
     const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
         setSlideElements(elems => [
             ...elems,
@@ -66,6 +95,24 @@ function PageCreate() {
             <Code width={width} height={height} code={text} size={fontSize} />
         ])
     }
+
+    const changeSlide = (direction) => {
+        if (direction == 'next') {
+            const newIndex = slideIndex + 1;
+            setSlideIndex(newIndex);
+        } else {
+            const newIndex = slideIndex - 1;
+            setSlideIndex(newIndex);
+        }
+    }
+
+    useEffect(() => {
+        const currentSlide = example_presentation.slides[slideIndex];
+        if (currentSlide) {
+            setSlideFormat(currentSlide.format);
+            setSlideElements(currentSlide.elements);
+        }
+    }, [slideIndex]);
 
     return (
         <>
@@ -127,7 +174,7 @@ function PageCreate() {
                         <div>
                             <button 
                                 onClick={() => handleOpenModal('code')}
-                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 w-full mb-2 xs:text-xs sm:text-sm md:text-base'>
+                                className='flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 w-full mb-2 xs:text-xs sm:text-sm md:text-base text-gray-900'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-1">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9.75 16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
                                 </svg>
@@ -170,13 +217,20 @@ function PageCreate() {
                     <Slide elements={slideElements} format={slideFormat}/>
                     <div className='bg-white border-t-2 border-gray-300 shadow-sm p-4 flex flex-1 items-start min-w-[340px] justify-between'>
                         <div>
-                            <button className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200'>
+                            <button 
+                                className={`text-sm p-2 transition duration-200 rounded ${slideIndex == 1 ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}
+                                disabled={slideIndex == 1}
+                                onClick={() => {changeSlide('prev')}}
+                                >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                     <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z" clipRule="evenodd" />
                                 </svg>
                                 Prev
                             </button>
-                            <button className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200'>
+                            <button 
+                                className={`text-sm p-2 transition duration-200 rounded ${slideIndex == example_presentation.slides.length - 1 ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}
+                                disabled={slideIndex == example_presentation.slides.length - 1}
+                                onClick={() => {changeSlide('next')}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                     <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clipRule="evenodd" />
                                 </svg>
@@ -194,9 +248,8 @@ function PageCreate() {
                                 className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200 flex items-center'
                                 onClick={() => {
                                     const data = {
-                                        elements: JSON.stringify(slideElements),
-                                        format: JSON.stringify(slideFormat),
-                                        slideNum: 1
+                                        slides: JSON.stringify(example_presentation.slides),
+                                        slideNum: slideIndex
                                     };
                                     const queryString = new URLSearchParams(data).toString();
                                     window.open(`/preview?${queryString}`, '_blank');

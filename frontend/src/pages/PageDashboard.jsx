@@ -121,7 +121,7 @@ function PageDashboard({ token }) {
       />
       )}
       
-      {JSON.stringify(store)}
+      {/* {JSON.stringify(store)} */}
       {store?.presentations?.length > 0 && 
       (<PresentationList presentationList={store.presentations} />
 )}

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PresentationDetails from '../components/PresentationDetails.jsx';
+import PresentationList from '../components/PresentationList.jsx';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 function PageDashboard({ token }) {
   const [store, setStore] = useState(null);
@@ -70,6 +72,8 @@ function PageDashboard({ token }) {
     if (!('presentations' in newStore)) {
       newStore.presentations = [];
     }
+
+    newPresentation.id = uuidv4();
     newStore.presentations.push(newPresentation);
     setStoreFn(newStore);
     setIsModalOpen(false);
@@ -118,6 +122,7 @@ function PageDashboard({ token }) {
       )}
       
       {JSON.stringify(store)}
+      {/* <PresentationList presentations={store.presentations} /> */}
     </>
   );
 }

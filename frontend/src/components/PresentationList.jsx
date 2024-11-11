@@ -1,11 +1,21 @@
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
 function PresentationList({ presentationList }) {
+
+  const navigate = useNavigate();
+
+  const reversedPresentations = [...presentationList].reverse();
+
   return (
     <div className="p-4 rounded-lg">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {presentationList.map((presentation) => (
+        {reversedPresentations.map((presentation) => (
           <div
             key={presentation.id}
             className="w-64 bg-white rounded-lg p-4 shadow-md"
+            // TODO: replace the below line so every presentation can be edited
+            onClick={() => navigate(`/create`)}
           >
             <div className="text-center">
               {presentation.thumbnail ? (
@@ -28,4 +38,4 @@ function PresentationList({ presentationList }) {
   );
 }
 
-export default PresentationList;
+export default PresentationList

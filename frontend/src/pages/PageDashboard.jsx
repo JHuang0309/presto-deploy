@@ -74,6 +74,13 @@ function PageDashboard({ token }) {
     }
 
     newPresentation.id = uuidv4();
+    newPresentation.slides.push(
+        {
+            id: uuidv4(),
+            presentation_id: newPresentation.id,
+            elements: [],
+        }
+    );
     newStore.presentations.push(newPresentation);
     setStoreFn(newStore);
     setIsModalOpen(false);

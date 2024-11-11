@@ -1,7 +1,17 @@
 import React from 'react';
 
 function PresentationDetails({ isOpen, newPresentation, handleInputChange, createPresentation, closeModal }) {
-  if (!isOpen) return null; // Avoid rendering when modal is closed
+  if (!isOpen) return null; 
+
+  const [thumbnailPreview, setThumbnailPreview] = React.useState(null);
+
+  React.useEffect(() => {
+    if (newPresentation.thumbnail) {
+      setThumbnailPreview(newPresentation.thumbnail);
+    } else {
+      setThumbnailPreview(null);
+    }
+  }, [newPresentation.thumbnail]);
 
   return (
     <div className="fixed inset-0 z-50 bg-gray-500 bg-opacity-75 overflow-auto">
@@ -28,6 +38,9 @@ function PresentationDetails({ isOpen, newPresentation, handleInputChange, creat
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#e4627d] focus:border-[#e4627d] sm:text-sm"
               />
+
+              
+
             </div>
             <div className="mb-4">
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
@@ -41,6 +54,27 @@ function PresentationDetails({ isOpen, newPresentation, handleInputChange, creat
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#e4627d] focus:border-[#e4627d] sm:text-sm"
               />
             </div>
+
+            <div className="mb-4">
+              <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700">
+                Thumbnail
+              </label>
+              <input
+                type="text"
+                id="thumbnail"
+                name="thumbnail"
+                value={newPresentation.thumbnail}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#e4627d] focus:border-[#e4627d] sm:text-sm"
+              />
+            </div>
+
+            {thumbnailPreview && (
+                <div className="mt-2">
+                  <img src={thumbnailPreview} alt="Enter a valid image url for preview" className="w-full h-auto max-h-48 my-4" />
+                </div>
+              )}
+
             <div className="flex justify-end">
               <button
                 type="button"

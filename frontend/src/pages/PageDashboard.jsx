@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PresentationDetails from '../components/PresentationDetails.jsx';
+import PresentationList from '../components/PresentationList.jsx';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 function PageDashboard({ token }) {
   const [store, setStore] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newPresentation, setNewPresentation] = useState({
+    id: "",
     title: "",
     description: "",
+    thumbnail: "",
+    slides: [],
   });
 
   const navigate = useNavigate();
@@ -67,10 +72,25 @@ function PageDashboard({ token }) {
     if (!('presentations' in newStore)) {
       newStore.presentations = [];
     }
+
+    newPresentation.id = uuidv4();
+    newPresentation.slides.push(
+        {
+            id: uuidv4(),
+            presentation_id: newPresentation.id,
+            elements: [],
+        }
+    );
     newStore.presentations.push(newPresentation);
     setStoreFn(newStore);
     setIsModalOpen(false);
-    setNewPresentation({ title: "", description: "" }); // Reset new presentation data
+    setNewPresentation({
+        id: "",
+        title: "",
+        description: "",
+        thumbnail: "",
+        slides: [],
+      }); // Reset new presentation data
   };
 
   const closeModal = () => {
@@ -108,7 +128,10 @@ function PageDashboard({ token }) {
       />
       )}
       
-      {JSON.stringify(store)}
+      {/* {JSON.stringify(store)} */}
+      {store?.presentations?.length > 0 && 
+      (<PresentationList presentationList={store.presentations} />
+)}
     </>
   );
 }

@@ -7,8 +7,11 @@ function PageDashboard({ token }) {
   const [store, setStore] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newPresentation, setNewPresentation] = useState({
+    id: "",
     title: "",
     description: "",
+    thumbnail: "",
+    slides: [],
   });
 
   const navigate = useNavigate();
@@ -70,7 +73,13 @@ function PageDashboard({ token }) {
     newStore.presentations.push(newPresentation);
     setStoreFn(newStore);
     setIsModalOpen(false);
-    setNewPresentation({ title: "", description: "" }); // Reset new presentation data
+    setNewPresentation({
+        id: "",
+        title: "",
+        description: "",
+        thumbnail: "",
+        slides: [],
+      }); // Reset new presentation data
   };
 
   const closeModal = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 
 function PresentationDetails({ isOpen, newPresentation, handleInputChange, createPresentation, closeModal }) {
-  if (!isOpen) return null; // Avoid rendering when modal is closed
+  if (!isOpen) return null; 
 
   return (
     <div className="fixed inset-0 z-50 bg-gray-500 bg-opacity-75 overflow-auto">
@@ -41,6 +41,7 @@ function PresentationDetails({ isOpen, newPresentation, handleInputChange, creat
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#e4627d] focus:border-[#e4627d] sm:text-sm"
               />
             </div>
+
             <div className="flex justify-end">
               <button
                 type="button"

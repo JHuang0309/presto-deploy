@@ -63,14 +63,14 @@ function PageCreate() {
     const [slideIndex, setSlideIndex] = useState(1)
 
     // Replace empty object with slide properties
-    const [slideFormat, setSlideFormat] = useState(example_presentation.slides[slideIndex].format)
+    const [slideFormat, setSlideFormat] = useState(example_presentation.slides[slideIndex - 1].format)
     const handleAddFormat = (formatObject) => {
         setSlideFormat(formatObject);
     }
 
     // Pass in list of elements as the default instead of the empty list []
     // Add a useEffect to store all slideElements to the store
-    const [slideElements, setSlideElements] = useState(example_presentation.slides[slideIndex].elements)
+    const [slideElements, setSlideElements] = useState(example_presentation.slides[slideIndex - 1].elements)
     const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
         setSlideElements(elems => [
             ...elems,
@@ -107,7 +107,7 @@ function PageCreate() {
     }
 
     useEffect(() => {
-        const currentSlide = example_presentation.slides[slideIndex];
+        const currentSlide = example_presentation.slides[slideIndex - 1];
         if (currentSlide) {
             setSlideFormat(currentSlide.format);
             setSlideElements(currentSlide.elements);

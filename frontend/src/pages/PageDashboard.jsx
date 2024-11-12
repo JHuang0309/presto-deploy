@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import PresentationDetails from '../components/PresentationDetails.jsx';
 import PresentationList from '../components/PresentationList.jsx';
-import { useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
+import Alert from '../components/Alert.jsx';
+
 
 function PageDashboard({ token }) {
   const [store, setStore] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertType, setAlertType] = useState('error');
+  const [alertMsg, setAlertMsg] = useState('');
   const [newPresentation, setNewPresentation] = useState({
     id: "",
     title: "",
     description: "",
     thumbnail: "",
-    slides: [],
+    versions: [],
   });
 
   const navigate = useNavigate();
@@ -37,24 +42,27 @@ function PageDashboard({ token }) {
         setStore(newStore);
       })
       .catch(function (error) {
-        alert(error.response.data.error);
+        setAlertType('error');
+        setAlertMsg(error.response.data.error);
+        setShowAlert(true);
       });
   };
 
     useEffect(() => {
-        if (token) {
-            axios.get('http://localhost:5005/store', {
-                headers: {Authorization: `Bearer ${token}`}
-            })
-            .then(function (response) {
-                setStore(response.data.store);
-            }) 
-            . catch(function (error) {
-                // TODO: redirect to login and display a component alert
-                alert(error.response.data.error);
-            });
-        }
-    }, [token]);
+      if (token) {
+        axios.get('http://localhost:5005/store', {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        .then((response) => {
+            setStore(response.data.store);
+        }) 
+        . catch((error) => {
+            localStorage.removeItem('token');
+            navigate('/login');
+            console.log(error.response.data.error);
+        });
+      }
+    }, [token, navigate]);
 
   const newPresentationClick = () => {
     setIsModalOpen(true);
@@ -74,11 +82,22 @@ function PageDashboard({ token }) {
     }
 
     newPresentation.id = uuidv4();
-    newPresentation.slides.push(
+    newPresentation.versions.push(
+        // {
+        //     id: uuidv4(),
+        //     presentation_id: newPresentation.id,
+        //     elements: [],
+        // }
         {
+          versionId: uuidv4(),
+          presentationId: newPresentation.id,
+          version: new Date().toLocaleString(),
+          slides: [{
             id: uuidv4(),
-            presentation_id: newPresentation.id,
+            presentationId: newPresentation.id,
             elements: [],
+            format: {format: 'solid', colour: '#FFFFFF'},
+          }]
         }
     );
     newStore.presentations.push(newPresentation);
@@ -89,7 +108,7 @@ function PageDashboard({ token }) {
         title: "",
         description: "",
         thumbnail: "",
-        slides: [],
+        versions: [],
       }); // Reset new presentation data
   };
 
@@ -99,6 +118,13 @@ function PageDashboard({ token }) {
 
   return (
     <>
+      {showAlert && (
+        <Alert 
+            message={alertMsg}
+            type={alertType}
+            onClose={() => setShowAlert(false)}
+        />
+      )}
       <div className="ml-6">
         <h3 className="text-balance text-3xl font-semibold my-4">
           Start a new presentation

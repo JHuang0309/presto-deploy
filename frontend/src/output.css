@@ -1232,6 +1232,10 @@ select {
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
 
+.border-transparent {
+  border-color: transparent;
+}
+
 .bg-\[\#e4627d\] {
   --tw-bg-opacity: 1;
   background-color: rgb(228 98 125 / var(--tw-bg-opacity));
@@ -1625,6 +1629,11 @@ select {
 .placeholder\:text-gray-400::placeholder {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
+.hover\:border-\[\#e4627d\]:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(228 98 125 / var(--tw-border-opacity));
 }
 
 .hover\:bg-\[\#e4627d\]:hover {

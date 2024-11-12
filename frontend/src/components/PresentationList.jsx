@@ -12,7 +12,7 @@ function PresentationList({ presentationList }) {
         {reversedPresentations.map((presentation) => (
           <div
             key={presentation.id}
-            className="w-64 bg-white rounded-lg p-4 shadow-md"
+            className="w-64 bg-white rounded-lg p-4 shadow-md border border-transparent hover:border-[#e4627d] cursor-pointer"
             onClick={() => {
               const slideNumber = 1;
               const data = {

@@ -23,9 +23,9 @@ function PageDashboard({ token }) {
 
   const navigate = useNavigate();
   useEffect(() => {
-      if (localStorage.getItem('token') == null) {
-          navigate('/login');
-      }
+    if (localStorage.getItem('token') == null) {
+      navigate('/login');
+    }
   }, [navigate]);
 
   const setStoreFn = (newStore) => {
@@ -38,31 +38,31 @@ function PageDashboard({ token }) {
         headers: { Authorization: `Bearer ${token}` },
       }
     )
-      .then(function (response) {
+      .then(() => {
         setStore(newStore);
       })
-      .catch(function (error) {
+      .catch((error) => {
         setAlertType('error');
         setAlertMsg(error.response.data.error);
         setShowAlert(true);
       });
   };
 
-    useEffect(() => {
-      if (token) {
-        axios.get('http://localhost:5005/store', {
-            headers: {Authorization: `Bearer ${token}`}
-        })
+  useEffect(() => {
+    if (token) {
+      axios.get('http://localhost:5005/store', {
+        headers: {Authorization: `Bearer ${token}`}
+      })
         .then((response) => {
-            setStore(response.data.store);
+          setStore(response.data.store);
         }) 
         . catch((error) => {
-            localStorage.removeItem('token');
-            navigate('/login');
-            console.log(error.response.data.error);
+          localStorage.removeItem('token');
+          navigate('/login');
+          console.log(error.response.data.error);
         });
-      }
-    }, [token, navigate]);
+    }
+  }, [token, navigate]);
 
   const newPresentationClick = () => {
     setIsModalOpen(true);
@@ -83,33 +83,28 @@ function PageDashboard({ token }) {
 
     newPresentation.id = uuidv4();
     newPresentation.versions.push(
-        // {
-        //     id: uuidv4(),
-        //     presentation_id: newPresentation.id,
-        //     elements: [],
-        // }
-        {
-          versionId: uuidv4(),
+      {
+        versionId: uuidv4(),
+        presentationId: newPresentation.id,
+        version: new Date().toLocaleString(),
+        slides: [{
+          id: uuidv4(),
           presentationId: newPresentation.id,
-          version: new Date().toLocaleString(),
-          slides: [{
-            id: uuidv4(),
-            presentationId: newPresentation.id,
-            elements: [],
-            format: {format: 'solid', colour: '#FFFFFF'},
-          }]
-        }
+          elements: [],
+          format: {format: 'solid', colour: '#FFFFFF'},
+        }]
+      }
     );
     newStore.presentations.push(newPresentation);
     setStoreFn(newStore);
     setIsModalOpen(false);
     setNewPresentation({
-        id: "",
-        title: "",
-        description: "",
-        thumbnail: "",
-        versions: [],
-      }); // Reset new presentation data
+      id: "",
+      title: "",
+      description: "",
+      thumbnail: "",
+      versions: [],
+    }); // Reset new presentation data
   };
 
   const closeModal = () => {
@@ -120,9 +115,9 @@ function PageDashboard({ token }) {
     <>
       {showAlert && (
         <Alert 
-            message={alertMsg}
-            type={alertType}
-            onClose={() => setShowAlert(false)}
+          message={alertMsg}
+          type={alertType}
+          onClose={() => setShowAlert(false)}
         />
       )}
       <div className="ml-6">
@@ -146,18 +141,18 @@ function PageDashboard({ token }) {
 
       {isModalOpen && (
         <PresentationDetails
-        isOpen={isModalOpen}
-        newPresentation={newPresentation}
-        handleInputChange={handleInputChange}
-        createPresentation={createPresentation}
-        closeModal={closeModal}
-      />
+          isOpen={isModalOpen}
+          newPresentation={newPresentation}
+          handleInputChange={handleInputChange}
+          createPresentation={createPresentation}
+          closeModal={closeModal}
+        />
       )}
       
       {/* {JSON.stringify(store)} */}
       {store?.presentations?.length > 0 && 
-      (<PresentationList presentationList={store.presentations} />
-)}
+        (<PresentationList presentationList={store.presentations} />
+        )}
     </>
   );
 }

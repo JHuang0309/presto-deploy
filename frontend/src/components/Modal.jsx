@@ -6,10 +6,11 @@ import ModalVideoInput from './ModalVideoInput';
 import ModalCodeInput from './ModalCodeInput';
 import ModalBackgroundInput from './ModalBackgroundInput';
 import ModalTitleInput from './ModalTitleInput';
+import ModalThumbnailInput from './ModalThumbnailInput';
 import Alert from './Alert';
 
 
-const Inputs = ({type, updateUserInput, title}) => {
+const Inputs = ({type, updateUserInput, title, thumbnail}) => {
     if (type == 'textbox') {
         return (
             <ModalTextInput updateUserInput={updateUserInput}/>
@@ -38,12 +39,16 @@ const Inputs = ({type, updateUserInput, title}) => {
         return (
             <ModalTitleInput updateUserInput={updateUserInput} title={title}/>
         );
+    } else if (type == 'editThumbnail') {
+        return (
+            <ModalThumbnailInput updateUserInput={updateUserInput} thumbnail={thumbnail}/>
+        );
     } else {
         console.log(`Error unknown add element button: ${type}`)
     }
 }
 
-const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle }) => {
+const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle, editThumbnail, presThumbnail }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [modalType, setModalType] = useState(''); // tracks the type of modal
     const [alertType, setAlertType] = useState('alert');
@@ -63,6 +68,8 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
             setModalType('Delete presentation');
         } else if (type == 'editTitle') {
             setModalType('Edit Title');
+        } else if (type == 'editThumbnail') {
+            setModalType('Edit Thumbnail');
         }
     })
 
@@ -173,6 +180,13 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
             } else {
                 editTitle(title);
             }
+        } else if (type == 'editThumbnail') {
+            const { thumbnail } = userInput
+            if (thumbnail == undefined) {
+                return;
+            } else {
+                editThumbnail(thumbnail);
+            }    
         } else {
             handleInvalidInputs('Error unknown element type')
         }

@@ -189,6 +189,16 @@ function PageCreate() {
         setStoreFn(newStore);
         setIsModalOpen(false);
     }
+    const handleEditThumbnail = (newThumbnail) => {
+        const newStore = { ...store };
+        const presIndex = newStore.presentations.findIndex(p => p.id === presId);
+        newStore.presentations[presIndex].thumbnail = newThumbnail;
+        setStoreFn(newStore);
+        setIsModalOpen(false);
+        setAlertType('success');
+        setAlertMsg('Thumbnail changed successfully');
+        setShowAlert(true);
+    }
 
     const changeSlide = (direction) => {
         if (direction == 'next') {
@@ -230,6 +240,8 @@ function PageCreate() {
                     deletePres={handleDeletePres}
                     editTitle={handleEditTitle}
                     presTitle={presTitle}
+                    editThumbnail={handleEditThumbnail}
+                    presThumbnail={thumbnail}
                 />
             )}
              <div className='lg:flex lg:items-center lg:justify-between pb-6 pl-6 pr-6 border-b-2 border-gray-300 shadow-sm p-4'>
@@ -254,7 +266,10 @@ function PageCreate() {
                             </svg>
                             Return to dashboard
                         </Link>
-                        <button className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200">
+                        <button 
+                            className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200"
+                            onClick={() => handleOpenModal('editThumbnail')}
+                        >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                             </svg>

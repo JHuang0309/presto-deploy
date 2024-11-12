@@ -3,11 +3,14 @@ import { useState } from 'react';
 const Alert = ({message, type, onClose }) => {
     const alertType = {
         error: 'bg-red-100 text-red-700',
+        success: 'bg-green-100 text-green-700',
         alert: 'bg-yellow-100 text-yellow-700', // used for modal invalid inputs
     }
     const closeIcon = (alertType) => {
         if (alertType == 'error') {
             return 'ml-4 text-red-500 hover:text-red-700';
+        } else if (alertType == 'success') {
+            return 'ml-4 text-green-500 hover:text-green-700';
         } else if (alertType == 'alert') {
             return 'ml-4 text-yellow-500 hover:text-yellow-700';
         }

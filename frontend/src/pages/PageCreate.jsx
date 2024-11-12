@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import Slide from '../components/Slide';
 import Modal from '../components/Modal';
@@ -9,39 +10,17 @@ import Image from '../components/Image';
 import Video from '../components/Video';
 import Alert from '../components/Alert.jsx';
 
-
-const example_presentation = {
-    id: 0,
-    title: 'example preso',
-    slides: [
-        {
-            id: 1,
-            format: {},
-            elements: ['a', 'b']
-        },
-        {
-            id: 2,
-            format: {},
-            elements: ['c', 'd']
-        },
-        {
-            id: 3,
-            format: {},
-            elements: ['e', 'f']
-        },
-        {
-            id: 4,
-            format: {},
-            elements: ['g', 'h']
-        },
-    ]
-}
-
 function PageCreate() {
     const [token, setToken] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
     const [alertType, setAlertType] = useState('error');
     const [alertMsg, setAlertMsg] = useState('');
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const [versions, setVersions] = useState(JSON.parse(queryParams.get("versions")));
+    const [presTitle, setPresTitle] = useState(queryParams.get("title"))
+    const presId = useState(queryParams.get("id"))[0];
+    const [thumbnail, setThumbnail] = useState(queryParams.get("thumbnail"))
     const navigate = useNavigate();
     useEffect(() => {
         if (localStorage.getItem('token') == null) {
@@ -73,28 +52,36 @@ function PageCreate() {
     };
     useEffect(() => {
         if (token) {
-          axios.get('http://localhost:5005/store', {
-              headers: {Authorization: `Bearer ${token}`}
-          })
-          .then((response) => {
-              setStore(response.data.store);
-          }) 
-          . catch((error) => {
-              localStorage.removeItem('token');
-              navigate('/login');
-              console.log(error.response.data.error);
-          });
+            axios.get('http://localhost:5005/store', {
+                headers: {Authorization: `Bearer ${token}`}
+            })
+            .then((response) => {
+                setStore(response.data.store);
+                const presentation = response.data.store.presentations.find(p => p.id === presId);
+                if (presentation) {
+                    setPresTitle(presentation.title);
+                    setThumbnail(presentation.thumbnail);
+                    setVersions(presentation.versions);
+                }
+            }) 
+            .catch((error) => {
+                localStorage.removeItem('token');
+                navigate('/login');
+                console.log(error.response.data.error);
+            });
         }
     }, [token, navigate]);
 
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-
-    const [versions, setSlides] = useState(JSON.parse(queryParams.get("versions")));
-    const [presTitle, setPresTitle] = useState(queryParams.get("title"))
-    const presId = useState(queryParams.get("id"));
-    const [thumbnail, setThumbnail] = useState(queryParams.get("thumbnail"))
-
+    useEffect(() => {
+        if (store && presId) {
+            const presentation = store.presentations.find(p => p.id === presId);
+            if (presentation) {
+                setPresTitle(presentation.title);
+                setThumbnail(presentation.thumbnail);
+                setVersions(presentation.versions);
+            }
+        }
+    }, [store, presId])
 
     const [isOpen, setIsOpen] = useState(true);
     const toggleSidebar = () => {
@@ -114,14 +101,14 @@ function PageCreate() {
     const [slideIndex, setSlideIndex] = useState(1)
 
     // Replace empty object with slide properties
-    const [slideFormat, setSlideFormat] = useState(example_presentation.slides[slideIndex - 1].format)
+    const [slideFormat, setSlideFormat] = useState(versions[versions.length - 1].slides[slideIndex - 1].format)
     const handleAddFormat = (formatObject) => {
         setSlideFormat(formatObject);
     }
 
     // Pass in list of elements as the default instead of the empty list []
     // Add a useEffect to store all slideElements to the store
-    const [slideElements, setSlideElements] = useState(example_presentation.slides[slideIndex - 1].elements)
+    const [slideElements, setSlideElements] = useState(versions[versions.length - 1].slides[slideIndex - 1].elements)
     const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
         setSlideElements(elems => [
             ...elems,
@@ -149,12 +136,34 @@ function PageCreate() {
     const handleDeletePres = () => {
         const newStore = { ...store };
         newStore.presentations = newStore.presentations.filter(
-            (presentation) => presentation.id !== presId[0]
+            (presentation) => presentation.id !== presId
         );
-        console.log(newStore);
+        
         setStoreFn(newStore);
         setIsModalOpen(false);
         navigate('/dashboard')
+    }
+    const handleAddSlide = () => {
+        const newStore = { ...store };
+
+        const presIndex = newStore.presentations.findIndex(p => p.id === presId);
+        const newSlides = [...newStore.presentations[presIndex].versions[versions.length - 1].slides];
+        newSlides.push({
+                id: uuidv4(),
+                presentationId: presId,
+                elements: [],
+                format: {format: 'solid', colour: '#FFFFFF'},
+        })
+        newStore.presentations[presIndex].versions = newStore.presentations[presIndex].versions.map(version => {
+            if (version.presentationId === presId) {
+                return { ...version, slides: newSlides };
+            }
+            return version;
+        });
+        setStoreFn(newStore);
+        setVersions(newStore.presentations[presIndex].versions);
+        setIsModalOpen(false);
+        changeSlide('next');
     }
 
     const changeSlide = (direction) => {
@@ -168,7 +177,7 @@ function PageCreate() {
     }
 
     useEffect(() => {
-        const currentSlide = example_presentation.slides[slideIndex - 1];
+        const currentSlide = versions[versions.length - 1].slides[slideIndex - 1];
         if (currentSlide) {
             setSlideFormat(currentSlide.format);
             setSlideElements(currentSlide.elements);
@@ -248,7 +257,10 @@ function PageCreate() {
                 {isOpen && (
                     <aside className='flex flex-col p-6 h-full px-3 py-4 overflow-y-auto md:w-60 sm:w-30'>
                         <div>
-                            <button className='flex bg-[#e4627d] items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#eb7b91] dark:hover:bg-gray-700 w-full text-white mb-2 xs:text-xs sm:text-sm md:text-base'>
+                            <button 
+                                className='flex bg-[#e4627d] items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#eb7b91] dark:hover:bg-gray-700 w-full text-white mb-2 xs:text-xs sm:text-sm md:text-base'
+                                onClick={() => handleAddSlide()}
+                                >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-1">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                                 </svg>
@@ -330,7 +342,7 @@ function PageCreate() {
                 <div className='flex-1 bg-gray-100 overflow-auto flex flex-col'>
                     <Slide elements={slideElements} format={slideFormat}/>
                     <div className='bg-white border-t-2 border-gray-300 shadow-sm p-4 flex flex-1 items-start min-w-[340px] justify-between'>
-                        <div>
+                        <div className='flex items-center'>
                             <button 
                                 className={`text-sm p-2 transition duration-200 rounded ${slideIndex == 1 ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}
                                 disabled={slideIndex == 1}
@@ -341,9 +353,12 @@ function PageCreate() {
                                 </svg>
                                 Prev
                             </button>
+                            <span className='ml-2 mr-2 text-gray-400 font-semibold'>
+                                {slideIndex}
+                            </span>
                             <button 
-                                className={`text-sm p-2 transition duration-200 rounded ${slideIndex == example_presentation.slides.length - 1 ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}
-                                disabled={slideIndex == example_presentation.slides.length - 1}
+                                className={`text-sm p-2 transition duration-200 rounded ${slideIndex == versions[versions.length - 1].slides.length ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}
+                                disabled={slideIndex == versions[versions.length - 1].slides.length}
                                 onClick={() => {changeSlide('next')}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                     <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clipRule="evenodd" />
@@ -362,7 +377,7 @@ function PageCreate() {
                                 className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200 flex items-center'
                                 onClick={() => {
                                     const data = {
-                                        slides: JSON.stringify(example_presentation.slides),
+                                        slides: JSON.stringify(versions[versions.length - 1].slides),
                                         slideNum: slideIndex
                                     };
                                     const queryString = new URLSearchParams(data).toString();

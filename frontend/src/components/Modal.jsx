@@ -5,10 +5,11 @@ import ModalTextInput from './ModalTextInput';
 import ModalVideoInput from './ModalVideoInput';
 import ModalCodeInput from './ModalCodeInput';
 import ModalBackgroundInput from './ModalBackgroundInput';
+import ModalTitleInput from './ModalTitleInput';
 import Alert from './Alert';
 
 
-const Inputs = ({type, updateUserInput}) => {
+const Inputs = ({type, updateUserInput, title}) => {
     if (type == 'textbox') {
         return (
             <ModalTextInput updateUserInput={updateUserInput}/>
@@ -29,17 +30,22 @@ const Inputs = ({type, updateUserInput}) => {
         return (
             <ModalBackgroundInput updateUserInput={updateUserInput}/>
         );
+    } else if (type == 'deletePres') {
+        return (
+            <p>Are you sure you want to delete this presentation?</p>
+        );
+    } else if (type == 'editTitle') {
+        return (
+            <ModalTitleInput updateUserInput={updateUserInput} title={title}/>
+        );
     } else {
         console.log(`Error unknown add element button: ${type}`)
     }
 }
 
-const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres }) => {
+const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [modalType, setModalType] = useState(''); // tracks the type of modal
-    const [addType, setAddType] = useState(false); // tracks whether the modal type is an add Type
-    const [deleteType, setDeleteType] = useState(false); // tracks whether the modal type is a delete Type
-    const [formatType, setFormatType] = useState(false); // tracks whether the modal type is a delete Type
     const [alertType, setAlertType] = useState('alert');
     const [alertMsg, setAlertMsg] = useState('');
     const [userInput, setUserInput] = useState({});
@@ -51,13 +57,12 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
         const addTypes = ['textbox', 'image', 'code', 'video']
         if (addTypes.includes(type)) {
             setModalType(`Add ${type}`);
-            setAddType(true);
         } else if (type == 'format') {
             setModalType('Format slide background');
-            setFormatType(true);
         } else if (type == 'deletePres') {
             setModalType('Delete presentation');
-            setDeleteType(true);
+        } else if (type == 'editTitle') {
+            setModalType('Edit Title');
         }
     })
 
@@ -159,6 +164,15 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
             onClose();
         } else if (type == 'deletePres') {
             deletePres();
+        } else if (type == 'editTitle') {
+            const { title } = userInput
+            if (title == undefined) {
+                return;
+            } else if (title == '') {
+                editTitle('Untitled presentation');
+            } else {
+                editTitle(title);
+            }
         } else {
             handleInvalidInputs('Error unknown element type')
         }
@@ -191,12 +205,7 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
                         <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
                             {modalType}
                         </DialogTitle>
-                        {(addType || formatType) && 
-                            <Inputs type={type} updateUserInput={updateUserInput}/>
-                        }
-                        {deleteType &&
-                            <p>Are you sure you want to delete this presentation?</p>
-                        }
+                        <Inputs type={type} updateUserInput={updateUserInput} title={presTitle}/>
                     </div>
                 </div>
                 </div>

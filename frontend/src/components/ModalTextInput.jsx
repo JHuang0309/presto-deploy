@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 const ModalTextInput = ({ updateUserInput }) => {
 
     const handleInput = (event) => {

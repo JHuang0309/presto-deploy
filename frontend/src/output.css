@@ -1232,6 +1232,10 @@ select {
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
 
+.border-transparent {
+  border-color: transparent;
+}
+
 .bg-\[\#e4627d\] {
   --tw-bg-opacity: 1;
   background-color: rgb(228 98 125 / var(--tw-bg-opacity));
@@ -1275,6 +1279,11 @@ select {
 .bg-yellow-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
+}
+
+.bg-green-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 252 231 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-75 {
@@ -1511,6 +1520,16 @@ select {
   color: rgb(161 98 7 / var(--tw-text-opacity));
 }
 
+.text-green-700 {
+  --tw-text-opacity: 1;
+  color: rgb(21 128 61 / var(--tw-text-opacity));
+}
+
+.text-green-500 {
+  --tw-text-opacity: 1;
+  color: rgb(34 197 94 / var(--tw-text-opacity));
+}
+
 .opacity-50 {
   opacity: 0.5;
 }
@@ -1612,6 +1631,11 @@ select {
   color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
+.hover\:border-\[\#e4627d\]:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(228 98 125 / var(--tw-border-opacity));
+}
+
 .hover\:bg-\[\#e4627d\]:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(228 98 125 / var(--tw-bg-opacity));
@@ -1645,6 +1669,11 @@ select {
 .hover\:text-yellow-700:hover {
   --tw-text-opacity: 1;
   color: rgb(161 98 7 / var(--tw-text-opacity));
+}
+
+.hover\:text-green-700:hover {
+  --tw-text-opacity: 1;
+  color: rgb(21 128 61 / var(--tw-text-opacity));
 }
 
 .focus\:border-\[\#e4627d\]:focus {
@@ -1763,6 +1792,26 @@ select {
     grid-column: span 6 / span 6;
   }
 
+  .sm\:col-span-1 {
+    grid-column: span 1 / span 1;
+  }
+
+  .sm\:col-span-8 {
+    grid-column: span 8 / span 8;
+  }
+
+  .sm\:col-span-10 {
+    grid-column: span 10 / span 10;
+  }
+
+  .sm\:col-span-12 {
+    grid-column: span 12 / span 12;
+  }
+
+  .sm\:col-span-11 {
+    grid-column: span 11 / span 11;
+  }
+
   .sm\:my-8 {
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -1816,6 +1865,10 @@ select {
     flex-direction: row-reverse;
   }
 
+  .sm\:flex-col {
+    flex-direction: column;
+  }
+
   .sm\:flex-wrap {
     flex-wrap: wrap;
   }
@@ -1826,6 +1879,10 @@ select {
 
   .sm\:items-center {
     align-items: center;
+  }
+
+  .sm\:justify-between {
+    justify-content: space-between;
   }
 
   .sm\:space-x-6 > :not([hidden]) ~ :not([hidden]) {
@@ -1913,6 +1970,14 @@ select {
 
   .md\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .md\:flex-row {
+    flex-direction: row;
+  }
+
+  .md\:justify-between {
+    justify-content: space-between;
   }
 
   .md\:text-base {

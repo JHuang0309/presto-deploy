@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link, useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import Slide from '../components/Slide';
@@ -11,17 +11,23 @@ import Video from '../components/Video';
 import Alert from '../components/Alert.jsx';
 
 function PageCreate() {
+    const { presentationId, slideNumber } = useParams();
     const [token, setToken] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
     const [alertType, setAlertType] = useState('error');
     const [alertMsg, setAlertMsg] = useState('');
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const [versions, setVersions] = useState(JSON.parse(queryParams.get("versions")));
+    const [versions, setVersions] = useState(null);
     const [presTitle, setPresTitle] = useState(queryParams.get("title"))
     const presId = useState(queryParams.get("id"))[0];
     const [thumbnail, setThumbnail] = useState(queryParams.get("thumbnail"))
+    const [slideIndex, setSlideIndex] = useState(slideNumber);
+    const [numSlides, setNumSlides] = useState(1);
+    const [slideElements, setSlideElements] = useState(null);
+    const [slideFormat, setSlideFormat] = useState(null);
     const navigate = useNavigate();
+
     useEffect(() => {
         if (localStorage.getItem('token') == null) {
             navigate('/login');
@@ -62,6 +68,12 @@ function PageCreate() {
                     setPresTitle(presentation.title);
                     setThumbnail(presentation.thumbnail);
                     setVersions(presentation.versions);
+                    setNumSlides(presentation.versions[presentation.versions.length - 1].slides.length);
+                    const currentSlide = presentation.versions[presentation.versions.length - 1].slides[slideIndex - 1];
+                    if (currentSlide) {
+                        setSlideFormat(currentSlide.format);
+                        setSlideElements(currentSlide.elements);
+                    }
                 }
             }) 
             .catch((error) => {
@@ -79,6 +91,7 @@ function PageCreate() {
                 setPresTitle(presentation.title);
                 setThumbnail(presentation.thumbnail);
                 setVersions(presentation.versions);
+                setNumSlides(presentation.versions[presentation.versions.length - 1].slides.length);
             }
         }
     }, [store, presId])
@@ -97,18 +110,9 @@ function PageCreate() {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     }
-
-    const [slideIndex, setSlideIndex] = useState(1)
-
-    // Replace empty object with slide properties
-    const [slideFormat, setSlideFormat] = useState(versions[versions.length - 1].slides[slideIndex - 1].format)
     const handleAddFormat = (formatObject) => {
         setSlideFormat(formatObject);
     }
-
-    // Pass in list of elements as the default instead of the empty list []
-    // Add a useEffect to store all slideElements to the store
-    const [slideElements, setSlideElements] = useState(versions[versions.length - 1].slides[slideIndex - 1].elements)
     const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
         setSlideElements(elems => [
             ...elems,
@@ -181,6 +185,7 @@ function PageCreate() {
         } else {
             setSlideIndex(slideIndex - 1);
         }
+        setNumSlides(numSlides - 1);
     }
     const handleEditTitle = (newTitle) => {
         const newStore = { ...store };
@@ -202,17 +207,17 @@ function PageCreate() {
 
     const changeSlide = (direction) => {
         if (direction == 'next') {
-            const newIndex = slideIndex + 1;
+            const newIndex = parseInt(slideIndex) + 1;
             setSlideIndex(newIndex);
         } else {
-            const newIndex = slideIndex - 1;
+            const newIndex = parseInt(slideIndex) - 1;
             setSlideIndex(newIndex);
         }
     }
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if (event.key === 'ArrowRight' && slideIndex < versions[versions.length - 1].slides.length) {
+            if (event.key === 'ArrowRight' && slideIndex < numSlides) {
                 changeSlide('next');
             } else if (event.key === 'ArrowLeft' && slideIndex > 1) {
                 changeSlide('prev');
@@ -222,15 +227,23 @@ function PageCreate() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
+    }, [slideIndex, numSlides]);
+
+    useEffect(() => {
+        if (versions) {
+            const currentSlide = versions[versions.length - 1].slides[slideIndex - 1];
+            if (currentSlide) {
+                setSlideFormat(currentSlide.format);
+                setSlideElements(currentSlide.elements);
+            }
+        }
     }, [slideIndex]);
 
     useEffect(() => {
-        const currentSlide = versions[versions.length - 1].slides[slideIndex - 1];
-        if (currentSlide) {
-            setSlideFormat(currentSlide.format);
-            setSlideElements(currentSlide.elements);
-        }
-    }, [slideIndex]);
+        if (slideIndex !== parseInt(slideNumber)) {
+            navigate(`/create/${presentationId}/${slideIndex}${location.search}`, { replace: true });
+        }   
+    }, [slideIndex, navigate]);
 
     return (
         <>
@@ -415,8 +428,10 @@ function PageCreate() {
                                 {slideIndex}
                             </span>
                             <button 
-                                className={`text-sm p-2 transition duration-200 rounded ${slideIndex == versions[versions.length - 1].slides.length ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}
-                                disabled={slideIndex == versions[versions.length - 1].slides.length}
+                                // className={`text-sm p-2 transition duration-200 rounded ${slideIndex == versions[versions.length - 1].slides.length ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}
+                                // disabled={slideIndex == versions[versions.length - 1].slides.length}
+                                className={`text-sm p-2 transition duration-200 rounded ${slideIndex == numSlides ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}
+                                disabled={slideIndex == numSlides}
                                 onClick={() => {changeSlide('next')}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                     <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clipRule="evenodd" />
@@ -434,12 +449,13 @@ function PageCreate() {
                             <button 
                                 className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200 flex items-center'
                                 onClick={() => {
-                                    const data = {
-                                        slides: JSON.stringify(versions[versions.length - 1].slides),
-                                        slideNum: slideIndex
-                                    };
-                                    const queryString = new URLSearchParams(data).toString();
-                                    window.open(`/preview?${queryString}`, '_blank');
+                                    if (versions) {
+                                        const data = {
+                                            slides: JSON.stringify(versions[versions.length - 1].slides),
+                                        };
+                                        const queryString = new URLSearchParams(data).toString();
+                                        window.open(`/preview/${slideIndex}?${queryString}`, '_blank');
+                                    }
                                 }}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-1">

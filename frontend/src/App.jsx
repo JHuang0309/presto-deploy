@@ -57,7 +57,7 @@ function App() {
           <Route path="/login" element={<PageLogin setTokenFn={setToken}/>}/>
           <Route path="/dashboard" element={<PageDashboard token={token}/>} />
           <Route path="/create/:presentationId/:slideNumber" element={<PageCreate />} />
-          <Route path="/preview" element={<PagePreview />} />
+          <Route path="/preview/:slideNumber" element={<PagePreview />} />
         </Routes>
       </BrowserRouter>
     </>

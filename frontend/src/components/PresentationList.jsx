@@ -16,8 +16,8 @@ function PresentationList({ presentationList }) {
             onClick={() => {
               const slideNumber = 1;
               const data = {
-                ...presentation,
-                versions: JSON.stringify(presentation.versions),
+                title: presentation.title,
+                id: presentation.id,
               }
               const queryString = new URLSearchParams(data).toString();
               navigate(`/create/${presentation.id}/${slideNumber}?${queryString}`)

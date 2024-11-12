@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Slide from '../components/Slide';
 
 function PagePreview() {
     // takes in slides, and slide number via url
     const location = useLocation();
+    const navigate = useNavigate();
     const queryParams = new URLSearchParams(location.search);
-
     const slides = JSON.parse(decodeURIComponent(queryParams.get('slides')))
-    const slideNumber = parseInt(queryParams.get('slideNum'), 10);
+    const slideNumber = parseInt(useParams().slideNumber);
 
     const [slideIndex, setSlideIndex] = useState(slideNumber)
 
@@ -20,10 +20,10 @@ function PagePreview() {
 
     const changeSlide = (direction) => {
         if (direction == 'next') {
-            const newIndex = slideIndex + 1;
+            const newIndex = parseInt(slideIndex) + 1;
             setSlideIndex(newIndex);
         } else {
-            const newIndex = slideIndex - 1;
+            const newIndex = parseInt(slideIndex) - 1;
             setSlideIndex(newIndex);
         }
     }
@@ -49,6 +49,12 @@ function PagePreview() {
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [slideIndex]);
+
+    useEffect(() => {
+        if (slideIndex !== slideNumber) {
+            navigate(`/preview/${slideIndex}${location.search}`, { replace: true });
+        }   
+    }, [slideIndex, navigate]);
 
     return (
         <>

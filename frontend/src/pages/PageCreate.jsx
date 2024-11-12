@@ -211,6 +211,20 @@ function PageCreate() {
     }
 
     useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'ArrowRight' && slideIndex < versions[versions.length - 1].slides.length) {
+                changeSlide('next');
+            } else if (event.key === 'ArrowLeft' && slideIndex > 1) {
+                changeSlide('prev');
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [slideIndex]);
+
+    useEffect(() => {
         const currentSlide = versions[versions.length - 1].slides[slideIndex - 1];
         if (currentSlide) {
             setSlideFormat(currentSlide.format);

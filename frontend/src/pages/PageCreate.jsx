@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import axios from 'axios';
 import Slide from '../components/Slide';
 import Modal from '../components/Modal';
 import Textbox from '../components/Textbox';
 import Code from '../components/Code';
 import Image from '../components/Image';
 import Video from '../components/Video';
-import { useNavigate } from 'react-router-dom';
+import Alert from '../components/Alert.jsx';
+
 
 const example_presentation = {
     id: 0,
@@ -36,14 +38,63 @@ const example_presentation = {
 }
 
 function PageCreate() {
-
     const [token, setToken] = useState(null);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertType, setAlertType] = useState('error');
+    const [alertMsg, setAlertMsg] = useState('');
     const navigate = useNavigate();
     useEffect(() => {
         if (localStorage.getItem('token') == null) {
             navigate('/login');
+        } else {
+            setToken(localStorage.getItem('token'));
         }
     }, [navigate]);
+
+    const [store, setStore] = useState(null);
+    const setStoreFn = (newStore) => {
+        axios.put(
+          'http://localhost:5005/store',
+          {
+            store: newStore,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then(() => {
+            setStore(newStore);
+        })
+        .catch((error) => {
+            setAlertType('error');
+            setAlertMsg(error.response.data.error);
+            setShowAlert(true);
+        });
+    };
+    useEffect(() => {
+        if (token) {
+          axios.get('http://localhost:5005/store', {
+              headers: {Authorization: `Bearer ${token}`}
+          })
+          .then((response) => {
+              setStore(response.data.store);
+          }) 
+          . catch((error) => {
+              localStorage.removeItem('token');
+              navigate('/login');
+              console.log(error.response.data.error);
+          });
+        }
+    }, [token, navigate]);
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+
+    const [versions, setSlides] = useState(JSON.parse(queryParams.get("versions")));
+    const [presTitle, setPresTitle] = useState(queryParams.get("title"))
+    const presId = useState(queryParams.get("id"));
+    const [thumbnail, setThumbnail] = useState(queryParams.get("thumbnail"))
+
 
     const [isOpen, setIsOpen] = useState(true);
     const toggleSidebar = () => {
@@ -95,6 +146,16 @@ function PageCreate() {
             <Code width={width} height={height} code={text} size={fontSize} />
         ])
     }
+    const handleDeletePres = () => {
+        const newStore = { ...store };
+        newStore.presentations = newStore.presentations.filter(
+            (presentation) => presentation.id !== presId[0]
+        );
+        console.log(newStore);
+        setStoreFn(newStore);
+        setIsModalOpen(false);
+        navigate('/dashboard')
+    }
 
     const changeSlide = (direction) => {
         if (direction == 'next') {
@@ -116,6 +177,13 @@ function PageCreate() {
 
     return (
         <>
+            {showAlert && (
+                <Alert 
+                    message={alertMsg}
+                    type={alertType}
+                    onClose={() => setShowAlert(false)}
+                />
+            )}
             {isModalOpen && (
                 <Modal 
                     type={modalType}
@@ -126,9 +194,55 @@ function PageCreate() {
                     addVideo={handleAddVideo}
                     addCode={handleAddCode}
                     addFormat={handleAddFormat}
+                    deletePres={handleDeletePres}
                 />
             )}
-            <Header title="presentation title" />
+             <div className='lg:flex lg:items-center lg:justify-between pb-6 pl-6 pr-6 border-b-2 border-gray-300 shadow-sm p-4'>
+                <div className="min-w-0 flex-1">
+                    <div className='flex items-end'>
+                        <h2 className="text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight mb-2">
+                            {presTitle}
+                        </h2>
+                        <button className='ml-2 pb-3'>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-gray-400">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+                        <Link to='/dashboard' className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                            </svg>
+                            Return to dashboard
+                        </Link>
+                        <button className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                            </svg>
+                            Change thumbnail
+                        </button>
+                        <button className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+
+                            Edit version history
+                        </button>
+                    </div>
+                </div>
+                <div className="mt-5 flex lg:ml-4 lg:mt-0">
+                    <span>
+                        <button 
+                            className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                            onClick={() => handleOpenModal('deletePres')}
+                        >
+                            Delete presentation
+                        </button>
+                        {/* add further buttons here */}
+                    </span>
+                </div>
+            </div>
             <div className='flex h-screen'>
                 {/* Main page body */}
                 {isOpen && (
@@ -191,7 +305,7 @@ function PageCreate() {
                         </div>
                         <div className='mt-auto'>
                             <button 
-                                onClick={() => handleOpenModal('background-format')}
+                                onClick={() => handleOpenModal('format')}
                                 className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 w-full mb-2 xs:text-xs sm:text-xs md:text-sm'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-1">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />

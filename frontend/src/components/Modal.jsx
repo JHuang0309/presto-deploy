@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import ModalImageInput from './ModalImageInput';
 import ModalTextInput from './ModalTextInput';
@@ -25,7 +25,7 @@ const Inputs = ({type, updateUserInput}) => {
         return (
             <ModalCodeInput updateUserInput={updateUserInput}/>
         );
-    } else if (type == 'background-format') {
+    } else if (type == 'format') {
         return (
             <ModalBackgroundInput updateUserInput={updateUserInput}/>
         );
@@ -34,14 +34,32 @@ const Inputs = ({type, updateUserInput}) => {
     }
 }
 
-const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat }) => {
+const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres }) => {
     const [showAlert, setShowAlert] = useState(false);
+    const [modalType, setModalType] = useState(''); // tracks the type of modal
+    const [addType, setAddType] = useState(false); // tracks whether the modal type is an add Type
+    const [deleteType, setDeleteType] = useState(false); // tracks whether the modal type is a delete Type
+    const [formatType, setFormatType] = useState(false); // tracks whether the modal type is a delete Type
     const [alertType, setAlertType] = useState('alert');
     const [alertMsg, setAlertMsg] = useState('');
     const [userInput, setUserInput] = useState({});
     const updateUserInput = (value) => {
         setUserInput(value);
     };
+
+    useEffect(() => {
+        const addTypes = ['textbox', 'image', 'code', 'video']
+        if (addTypes.includes(type)) {
+            setModalType(`Add ${type}`);
+            setAddType(true);
+        } else if (type == 'format') {
+            setModalType('Format slide background');
+            setFormatType(true);
+        } else if (type == 'deletePres') {
+            setModalType('Delete presentation');
+            setDeleteType(true);
+        }
+    })
 
     const closeModal = () => {
         if (!showAlert) onClose();
@@ -53,7 +71,7 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
         setShowAlert(true);
     }
 
-    const handleAddElement = (type) => {
+    const handleModalProcess = (type) => {
         const isValidHex = (hex) => /^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
         if (type == 'textbox') {
             const { width, height, text, fontSize, colour } = userInput;
@@ -114,7 +132,7 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
                 addCode(userInput);
                 onClose();   
             }
-        } else if (type == 'background-format') {
+        } else if (type == 'format') {
             if (userInput.format == 'solid') {
                 if (!isValidHex(userInput.colour)) {
                     handleInvalidInputs('Invalid colour. Please enter a valid hex color.');
@@ -139,7 +157,8 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
             }
             addFormat(userInput);
             onClose();
-            
+        } else if (type == 'deletePres') {
+            deletePres();
         } else {
             handleInvalidInputs('Error unknown element type')
         }
@@ -170,19 +189,24 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
                     <div className="sm:flex sm:items-start">
                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                         <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
-                            Add {type}
+                            {modalType}
                         </DialogTitle>
-                        <Inputs type={type} updateUserInput={updateUserInput}/>
+                        {(addType || formatType) && 
+                            <Inputs type={type} updateUserInput={updateUserInput}/>
+                        }
+                        {deleteType &&
+                            <p>Are you sure you want to delete this presentation?</p>
+                        }
                     </div>
                 </div>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 justify-between">
                 <button
                     type="button"
-                    onClick={() => handleAddElement(type)}
+                    onClick={() => handleModalProcess(type)}
                     className="inline-flex w-full justify-center rounded-md bg-[#e4627d] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#eb7b91] sm:ml-3 sm:w-auto"
                 >
-                    Add
+                    {modalType}
                 </button>
                 <button
                     type="button"

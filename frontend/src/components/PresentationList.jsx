@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function PresentationList({ presentationList }) {
-
   const navigate = useNavigate();
 
   const reversedPresentations = [...presentationList].reverse();
@@ -14,8 +13,15 @@ function PresentationList({ presentationList }) {
           <div
             key={presentation.id}
             className="w-64 bg-white rounded-lg p-4 shadow-md"
-            // TODO: replace the below line so every presentation can be edited
-            onClick={() => navigate(`/create`)}
+            onClick={() => {
+              const slideNumber = 1;
+              const data = {
+                ...presentation,
+                versions: JSON.stringify(presentation.versions),
+              }
+              const queryString = new URLSearchParams(data).toString();
+              navigate(`/create/${presentation.id}/${slideNumber}?${queryString}`)
+            }}
           >
             <div className="text-center">
               {presentation.thumbnail ? (
@@ -30,7 +36,7 @@ function PresentationList({ presentationList }) {
             </div>
             <h3 className="text-lg font-bold mt-4">{presentation.title}</h3>
             <p className="text-gray-500">{presentation.description}</p>
-            <p className="text-gray-500">Slides: {presentation.slides.length}</p>
+            <p className="text-gray-500">Slides: {presentation.versions[presentation.versions.length-1].slides.length}</p>
           </div>
         ))}
       </div>

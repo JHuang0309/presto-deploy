@@ -326,7 +326,7 @@ function PageCreate() {
       <div className='flex h-screen'>
         {/* Main page body */}
         {isOpen && (
-          <aside className='flex flex-col p-6 h-full px-3 py-4 overflow-y-auto md:w-60 sm:w-30'>
+          <aside className='flex flex-col p-6 px-3 py-4 overflow-y-auto md:w-60 sm:w-30'>
             <div>
               <button 
                 className='flex bg-[#e4627d] items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#eb7b91] dark:hover:bg-gray-700 w-full text-white mb-2 xs:text-xs sm:text-sm md:text-base'

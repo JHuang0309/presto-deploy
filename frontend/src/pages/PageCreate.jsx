@@ -412,7 +412,7 @@ function PageCreate() {
         </button>
         <div className='flex-1 bg-gray-100 overflow-auto flex flex-col'>
           <Slide elements={slideElements} format={slideFormat}/>
-          <div className='bg-white border-t-2 border-gray-300 shadow-sm p-4 flex flex-1 items-start min-w-[340px] justify-between'>
+          <div className='bg-white border-t-2 border-gray-300 shadow-sm p-4 flex flex-1 items-start min-w-[340px] sm:justify-between flex-col sm:flex-row'>
             <div className='flex items-center'>
               <button 
                 className={`text-sm p-2 transition duration-200 rounded ${slideIndex == 1 ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 hover:bg-gray-100 hover:bg-gray-100'}`}

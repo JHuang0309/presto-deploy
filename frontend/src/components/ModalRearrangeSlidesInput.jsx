@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MiniSlide from "./MiniSlide";
 
 const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
@@ -40,29 +40,29 @@ const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
               <MiniSlide format={slide.format} slideNumber={slide.slideNumber}/>
             </div>
             <div className="flex flex-col justify-center items-center">
-                <div>
-                  <button
-                    onClick={() => swapSlides(index, "left")}
-                    disabled={index === 0}
-                    className="text-gray-400"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                    </svg>
-                  </button>
-                </div>
-                <div>
-                  <button
-                    onClick={() => swapSlides(index, "right")}
-                    disabled={index === slides.length - 1}
-                    className="text-gray-400"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </button>
-                </div>
+              <div>
+                <button
+                  onClick={() => swapSlides(index, "left")}
+                  disabled={index === 0}
+                  className="text-gray-400"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                  </svg>
+                </button>
               </div>
+              <div>
+                <button
+                  onClick={() => swapSlides(index, "right")}
+                  disabled={index === slides.length - 1}
+                  className="text-gray-400"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </li>
         ))}
       </ul>

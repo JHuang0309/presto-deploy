@@ -359,23 +359,23 @@ function PageCreate() {
         ...store,
         presentations: store.presentations.map((presentation, index) => {
           if (index === presIndex) {
-              return {
-                  ...presentation,
-                  versions: presentation.versions.map((version, versionIndex) => {
-                      if (versionIndex === presentation.versions.length - 1) {
-                          return {
-                              ...version,
-                              slides: version.slides.map((slide, _slideIndex) => {
-                                  if (_slideIndex === (slideIndex - 1)) {
-                                      return newSlide;
-                                  }
-                                  return slide;
-                              }),
-                          };
+            return {
+              ...presentation,
+              versions: presentation.versions.map((version, versionIndex) => {
+                if (versionIndex === presentation.versions.length - 1) {
+                  return {
+                    ...version,
+                    slides: version.slides.map((slide, _slideIndex) => {
+                      if (_slideIndex === (slideIndex - 1)) {
+                        return newSlide;
                       }
-                      return version;
-                  }),
-              };
+                      return slide;
+                    }),
+                  };
+                }
+                return version;
+              }),
+            };
           }
           return presentation;
         }),

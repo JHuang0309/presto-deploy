@@ -94,49 +94,49 @@ function PageCreate() {
         setNumSlides(presentation.versions[presentation.versions.length - 1].slides.length);
       }
     }
-  }, [store, presId])
+  }, [store, presId]);
 
   const [isOpen, setIsOpen] = useState(true);
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
-  }
+  };
 
   const [modalType, setModalType] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = (type) => {
     setModalType(type);
     setIsModalOpen(true);
-  }
+  };
   const handleCloseModal = () => {
     setIsModalOpen(false);
-  }
+  };
   const handleAddFormat = (formatObject) => {
     setSlideFormat(formatObject);
-  }
+  };
   const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
     setSlideElements(elems => [
       ...elems,
       <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour} />
     ])
-  }
+  };
   const handleAddImage = ({width, height, image, description}) => {
     setSlideElements(elems => [
       ...elems,
       <Image key={uuidv4()} width={width} height={height} image={image} description={description} />
     ])
-  }
+  };
   const handleAddVideo = ({width, height, url, autoplay}) => {
     setSlideElements(elems => [
       ...elems,
       <Video key={uuidv4()} width={width} height={height} url={url} autoplay={autoplay} />
     ])
-  }
+  };
   const handleAddCode = ({width, height, text, fontSize}) => {
     setSlideElements(elems => [
       ...elems,
       <Code key={uuidv4()} width={width} height={height} code={text} size={fontSize} />
     ])
-  }
+  };
   const handleDeletePres = () => {
     const newStore = { ...store };
     newStore.presentations = newStore.presentations.filter(
@@ -146,7 +146,7 @@ function PageCreate() {
     setStoreFn(newStore);
     setIsModalOpen(false);
     navigate('/dashboard')
-  }
+  };
   const handleAddSlide = () => {
     const newStore = { ...store };
     const presIndex = newStore.presentations.findIndex(p => p.id === presId);
@@ -157,17 +157,16 @@ function PageCreate() {
       elements: [],
       format: {format: 'solid', colour: '#FFFFFF'},
     })
-    newStore.presentations[presIndex].versions = newStore.presentations[presIndex].versions.map(version => {
-      if (version.presentationId === presId) {
-        return { ...version, slides: newSlides };
-      }
-      return version;
-    });
+    const lastVersionIndex = newStore.presentations[presIndex].versions.length - 1;
+    newStore.presentations[presIndex].versions[lastVersionIndex] = {
+      ...newStore.presentations[presIndex].versions[lastVersionIndex],
+      slides: newSlides,
+    };
     setStoreFn(newStore);
     setVersions(newStore.presentations[presIndex].versions);
     setIsModalOpen(false);
     changeSlide('next');
-  }
+  };
   const deleteSlide = () => {
     const newStore = { ...store };
     const presIndex = newStore.presentations.findIndex(p => p.id === presId);
@@ -186,30 +185,83 @@ function PageCreate() {
       setSlideIndex(slideIndex - 1);
     }
     setNumSlides(numSlides - 1);
-  }
+  };
   const handleEditTitle = (newTitle) => {
     const newStore = { ...store };
     const presIndex = newStore.presentations.findIndex(p => p.id === presId);
     newStore.presentations[presIndex].title = newTitle;
     setStoreFn(newStore);
     setIsModalOpen(false);
-  }
+  };
   const handleEditThumbnail = (newThumbnail) => {
     const newStore = { ...store };
     const presIndex = newStore.presentations.findIndex(p => p.id === presId);
     newStore.presentations[presIndex].thumbnail = newThumbnail;
     setIsModalOpen(false);
     if (newThumbnail != undefined) {
-      setAlertType('success');
-      setAlertMsg('Thumbnail changed successfully');
       setStoreFn(newStore);
-      setShowAlert(true);
     }
-  }
-  const handleRearrangeSlides = () => {
-    console.log('Rearranged');
-  }
+  };
+  const handleRearrangeSlides = ({slides}) => {
+    if (!store || slides == undefined) {
+      return;
+    }
+    const presIndex = store.presentations.findIndex(p => p.id === presId);
+    if (presIndex !== -1) {
+      const newStore = {
+        ...store,
+        presentations: store.presentations.map((presentation, index) => {
+          if (index === presIndex) {
+            return {
+              ...presentation,
+              versions: presentation.versions.map((version, versionIndex) => {
+                if (versionIndex === presentation.versions.length - 1) {
+                  return {
+                    ...version,
+                    slides: slides,
+                  };
+                }
+                return version;
+              }),
+            };
+          }
+          return presentation;
+        }),
+      };
+      setStoreFn(newStore);
+    }
+  };
+  const handleSavePresentation = () => {
+    console.log(store);
+    const newVersion = { ...versions[versions.length - 1] };
+    const date = new Date();
+    const formattedDate = date.toLocaleString();
+    newVersion['version'] = formattedDate;
+    const updatedVersions = [...versions, newVersion];
 
+    const presIndex = store.presentations.findIndex(p => p.id === presId);
+    if (presIndex !== -1) {
+      const newStore = {
+        ...store,
+        presentations: store.presentations.map((presentation, index) => {
+          if (index === presIndex) {
+            return {
+              ...presentation,
+              versions: updatedVersions,
+            };
+          }
+          return presentation;
+        }),
+      };
+
+  setStoreFn(newStore);
+  console.log(newStore);
+}
+
+    setAlertType('success');
+    setAlertMsg(`Presentation saved successfully at ${formattedDate}`);
+    setShowAlert(true);
+  }
   const changeSlide = (direction) => {
     if (direction == 'next') {
       const newIndex = parseInt(slideIndex) + 1;
@@ -218,7 +270,7 @@ function PageCreate() {
       const newIndex = parseInt(slideIndex) - 1;
       setSlideIndex(newIndex);
     }
-  }
+  };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -320,11 +372,13 @@ function PageCreate() {
           presThumbnail={thumbnail}
           rearrangeSlides={handleRearrangeSlides}
           slideVersions={versions}
+          savePresentation={handleSavePresentation}
         />
       )}
       <div className='lg:flex lg:items-center lg:justify-between pb-6 pl-6 pr-6 border-b-2 border-gray-300 shadow-sm p-4'>
         <div className="min-w-0 flex-1">
           <div className='flex items-end'>
+            <img src={thumbnail} className='max-h-[45px] mr-4 cursor-pointer' onClick={() => handleOpenModal('editThumbnail')}></img>
             <h2 className="text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight mb-2">
               {presTitle}
             </h2>
@@ -344,6 +398,15 @@ function PageCreate() {
               </svg>
               Return to dashboard
             </Link>
+            <button 
+              className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200"
+              onClick={() => handleSavePresentation()}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              Save presentation
+            </button>
             <button 
               className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200"
               onClick={() => handleOpenModal('editThumbnail')}

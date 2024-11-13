@@ -196,7 +196,7 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
       const { thumbnail } = userInput
       editThumbnail(thumbnail);
     } else if (type == 'rearrangeSlides') {
-      rearrangeSlides();
+      rearrangeSlides(userInput);
       onClose();
     } else {
       handleInvalidInputs('Error unknown element type')
@@ -224,13 +224,11 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
             className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-              <div className="sm:flex sm:items-start">
-                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                  <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
-                    {modalType}
-                  </DialogTitle>
-                  <Inputs type={type} updateUserInput={updateUserInput} title={presTitle} thumbnail={presThumbnail} slideVersions={slideVersions}/>
-                </div>
+              <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
+                  {modalType}
+                </DialogTitle>
+                <Inputs type={type} updateUserInput={updateUserInput} title={presTitle} thumbnail={presThumbnail} slideVersions={slideVersions}/>
               </div>
             </div>
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 justify-between">

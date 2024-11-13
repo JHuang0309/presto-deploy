@@ -94,49 +94,49 @@ function PageCreate() {
         setNumSlides(presentation.versions[presentation.versions.length - 1].slides.length);
       }
     }
-  }, [store, presId])
+  }, [store, presId]);
 
   const [isOpen, setIsOpen] = useState(true);
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
-  }
+  };
 
   const [modalType, setModalType] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = (type) => {
     setModalType(type);
     setIsModalOpen(true);
-  }
+  };
   const handleCloseModal = () => {
     setIsModalOpen(false);
-  }
+  };
   const handleAddFormat = (formatObject) => {
     setSlideFormat(formatObject);
-  }
+  };
   const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
     setSlideElements(elems => [
       ...elems,
       <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour} />
     ])
-  }
+  };
   const handleAddImage = ({width, height, image, description}) => {
     setSlideElements(elems => [
       ...elems,
       <Image key={uuidv4()} width={width} height={height} image={image} description={description} />
     ])
-  }
+  };
   const handleAddVideo = ({width, height, url, autoplay}) => {
     setSlideElements(elems => [
       ...elems,
       <Video key={uuidv4()} width={width} height={height} url={url} autoplay={autoplay} />
     ])
-  }
+  };
   const handleAddCode = ({width, height, text, fontSize}) => {
     setSlideElements(elems => [
       ...elems,
       <Code key={uuidv4()} width={width} height={height} code={text} size={fontSize} />
     ])
-  }
+  };
   const handleDeletePres = () => {
     const newStore = { ...store };
     newStore.presentations = newStore.presentations.filter(
@@ -146,7 +146,7 @@ function PageCreate() {
     setStoreFn(newStore);
     setIsModalOpen(false);
     navigate('/dashboard')
-  }
+  };
   const handleAddSlide = () => {
     const newStore = { ...store };
     const presIndex = newStore.presentations.findIndex(p => p.id === presId);
@@ -167,7 +167,7 @@ function PageCreate() {
     setVersions(newStore.presentations[presIndex].versions);
     setIsModalOpen(false);
     changeSlide('next');
-  }
+  };
   const deleteSlide = () => {
     const newStore = { ...store };
     const presIndex = newStore.presentations.findIndex(p => p.id === presId);
@@ -186,14 +186,14 @@ function PageCreate() {
       setSlideIndex(slideIndex - 1);
     }
     setNumSlides(numSlides - 1);
-  }
+  };
   const handleEditTitle = (newTitle) => {
     const newStore = { ...store };
     const presIndex = newStore.presentations.findIndex(p => p.id === presId);
     newStore.presentations[presIndex].title = newTitle;
     setStoreFn(newStore);
     setIsModalOpen(false);
-  }
+  };
   const handleEditThumbnail = (newThumbnail) => {
     const newStore = { ...store };
     const presIndex = newStore.presentations.findIndex(p => p.id === presId);
@@ -205,11 +205,36 @@ function PageCreate() {
       setStoreFn(newStore);
       setShowAlert(true);
     }
-  }
-  const handleRearrangeSlides = () => {
-    console.log('Rearranged');
-  }
-
+  };
+  const handleRearrangeSlides = ({slides}) => {
+    if (!store || slides == undefined) {
+      return;
+    }
+    const presIndex = store.presentations.findIndex(p => p.id === presId);
+    if (presIndex !== -1) {
+      const newStore = {
+        ...store,
+        presentations: store.presentations.map((presentation, index) => {
+          if (index === presIndex) {
+            return {
+              ...presentation,
+              versions: presentation.versions.map((version, versionIndex) => {
+                if (versionIndex === presentation.versions.length - 1) {
+                  return {
+                    ...version,
+                    slides: slides,
+                  };
+                }
+                return version;
+              }),
+            };
+          }
+          return presentation;
+        }),
+      };
+      setStoreFn(newStore);
+    }
+  };
   const changeSlide = (direction) => {
     if (direction == 'next') {
       const newIndex = parseInt(slideIndex) + 1;
@@ -218,7 +243,7 @@ function PageCreate() {
       const newIndex = parseInt(slideIndex) - 1;
       setSlideIndex(newIndex);
     }
-  }
+  };
 
   useEffect(() => {
     const handleKeyDown = (event) => {

@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
+import MiniSlide from "./MiniSlide";
 
 const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
-  const [slides, setSlides] = useState(slideVersions[slideVersions.length - 1].slides);
+  const [slides, setSlides] = useState(
+    slideVersions[slideVersions.length - 1].slides.map((slide, index) => ({
+      ...slide,
+      slideNumber: index + 1,
+    }))
+  );
 
-  const saveRearrangement = () => {
+  const saveRearrangement = (newSlides) => {
+    setSlides(newSlides);
     updateUserInput(prevInput => ({
       ...prevInput,
-      slides: slides // Save the new order of the slides
+      slides: newSlides
     }));
   };
-
-  console.log(slides);
   
   const swapSlides = (index, direction) => {
     const newSlides = [...slides];
@@ -23,43 +28,44 @@ const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
       newSlides[index] = newSlides[index + 1];
       newSlides[index + 1] = temp;
     }
-    setSlides(newSlides);
+    saveRearrangement(newSlides);
   }
 
   return (
     <div className="modal-content">
-      <div className="flex justify-center space-x-4">
-        {/* Map through slides and display each slide with arrows */}
+      <ul role="list" className="divide-y divide-gray-100 overflow-y-auto max-h-[600px] sm:justify-between">
         {slides.map((slide, index) => (
-          <div key={slide.id} className="text-center">
-            <div className="slide-item">
-              {/* Display slide content (could be text, image, etc.) */}
-              <div>{slide.id}</div>
-
-              {/* Arrow buttons to move the slide */}
-              <div className="flex justify-center space-x-2">
-                {/* Left arrow */}
-                <button
-                  onClick={() => swapSlides(index, "left")}
-                  disabled={index === 0}
-                  className="px-2 py-1 bg-gray-300 text-white rounded hover:bg-gray-400"
-                >
-                  {"<"}
-                </button>
-                
-                {/* Right arrow */}
-                <button
-                  onClick={() => swapSlides(index, "right")}
-                  disabled={index === slides.length - 1}
-                  className="px-2 py-1 bg-gray-300 text-white rounded hover:bg-gray-400"
-                >
-                  {">"}
-                </button>
-              </div>
+          <li key={slide.id} className="flex justify-between gap-x-6 py-5 sm:justify-between">
+            <div className="flex gap-x-4">
+              <MiniSlide format={slide.format} slideNumber={slide.slideNumber}/>
             </div>
-          </div>
+            <div className="flex flex-col justify-center items-center">
+                <div>
+                  <button
+                    onClick={() => swapSlides(index, "left")}
+                    disabled={index === 0}
+                    className="text-gray-400"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                    </svg>
+                  </button>
+                </div>
+                <div>
+                  <button
+                    onClick={() => swapSlides(index, "right")}
+                    disabled={index === slides.length - 1}
+                    className="text-gray-400"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>  
   );
 };

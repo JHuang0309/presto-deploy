@@ -26,6 +26,8 @@ function PageCreate() {
   const [numSlides, setNumSlides] = useState(1);
   const [slideElements, setSlideElements] = useState(null);
   const [slideFormat, setSlideFormat] = useState(null);
+  const [lastSaveTime, setLastSaveTime] = useState(null);
+  const [editMade, setEditMade] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,30 +114,35 @@ function PageCreate() {
   };
   const handleAddFormat = (formatObject) => {
     setSlideFormat(formatObject);
+    setEditMade(true);
   };
   const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
     setSlideElements(elems => [
       ...elems,
       <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour} />
-    ])
+    ]);
+    setEditMade(true);
   };
   const handleAddImage = ({width, height, image, description}) => {
     setSlideElements(elems => [
       ...elems,
       <Image key={uuidv4()} width={width} height={height} image={image} description={description} />
-    ])
+    ]);
+    setEditMade(true);
   };
   const handleAddVideo = ({width, height, url, autoplay}) => {
     setSlideElements(elems => [
       ...elems,
       <Video key={uuidv4()} width={width} height={height} url={url} autoplay={autoplay} />
-    ])
+    ]);
+    setEditMade(true);
   };
   const handleAddCode = ({width, height, text, fontSize}) => {
     setSlideElements(elems => [
       ...elems,
       <Code key={uuidv4()} width={width} height={height} code={text} size={fontSize} />
-    ])
+    ]);
+    setEditMade(true);
   };
   const handleDeletePres = () => {
     const newStore = { ...store };
@@ -166,6 +173,7 @@ function PageCreate() {
     setVersions(newStore.presentations[presIndex].versions);
     setIsModalOpen(false);
     changeSlide('next');
+    setEditMade(true);
   };
   const deleteSlide = () => {
     const newStore = { ...store };
@@ -185,6 +193,7 @@ function PageCreate() {
       setSlideIndex(slideIndex - 1);
     }
     setNumSlides(numSlides - 1);
+    setEditMade(true);
   };
   const handleEditTitle = (newTitle) => {
     const newStore = { ...store };
@@ -229,16 +238,16 @@ function PageCreate() {
         }),
       };
       setStoreFn(newStore);
+      setEditMade(true);
     }
   };
-  const handleSavePresentation = () => {
-    console.log(store);
+  const handleSavePresentation = (manual) => {
     const newVersion = { ...versions[versions.length - 1] };
     const date = new Date();
     const formattedDate = date.toLocaleString();
     newVersion['version'] = formattedDate;
+    newVersion['versionId'] = uuidv4();
     const updatedVersions = [...versions, newVersion];
-
     const presIndex = store.presentations.findIndex(p => p.id === presId);
     if (presIndex !== -1) {
       const newStore = {
@@ -253,14 +262,40 @@ function PageCreate() {
           return presentation;
         }),
       };
-
-  setStoreFn(newStore);
-  console.log(newStore);
-}
-
-    setAlertType('success');
-    setAlertMsg(`Presentation saved successfully at ${formattedDate}`);
-    setShowAlert(true);
+      setStoreFn(newStore);
+      setEditMade(false);
+    }
+    setLastSaveTime(Date.now());
+    if (manual) {
+      setAlertType('success');
+      setAlertMsg(`Presentation saved successfully at ${formattedDate}`);
+      setShowAlert(true);
+    }
+  }
+  const handleEditVersion = (version) => {
+    if (!store || !versions || version.version == undefined) return;
+    const presIndex = store.presentations.findIndex(p => p.id === presId);
+    const presentation = store.presentations[presIndex];
+    const versionIndex = presentation.versions.findIndex(v => v.versionId === version.version);
+    const selectedVersion = presentation.versions[versionIndex];
+    const date = new Date();
+    const formattedDate = date.toLocaleString();
+    const newVersion = { ...selectedVersion, versionId: uuidv4(), version: formattedDate };
+    
+    const newStore = {
+      ...store,
+      presentations: store.presentations.map((pres, index) => {
+        if (index === presIndex) {
+          return {
+            ...pres,
+            versions: [...pres.versions, newVersion],
+          };
+        }
+        return pres;
+      }),
+    };
+    setStoreFn(newStore);
+    setSlideIndex(1);
   }
   const changeSlide = (direction) => {
     if (direction == 'next') {
@@ -344,7 +379,18 @@ function PageCreate() {
       };
       setStoreFn(newStore);
     }
-  }, [slideElements, slideFormat])
+  }, [slideElements, slideFormat]);
+
+  useEffect(() => {
+    if (!store || !editMade) return;
+    const now = Date.now()
+    const timeSinceLastSave = lastSaveTime ? now - lastSaveTime : Infinity;
+    if (timeSinceLastSave >= 60000 || lastSaveTime == null) {
+      handleSavePresentation(false);
+      setLastSaveTime(now);
+      setEditMade(false);
+    }
+  }, [slideElements, slideFormat, versions]);
 
   return (
     <>
@@ -373,6 +419,7 @@ function PageCreate() {
           rearrangeSlides={handleRearrangeSlides}
           slideVersions={versions}
           savePresentation={handleSavePresentation}
+          editVersion={handleEditVersion}
         />
       )}
       <div className='lg:flex lg:items-center lg:justify-between pb-6 pl-6 pr-6 border-b-2 border-gray-300 shadow-sm p-4'>
@@ -400,7 +447,7 @@ function PageCreate() {
             </Link>
             <button 
               className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200"
-              onClick={() => handleSavePresentation()}
+              onClick={() => handleSavePresentation(true)}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -416,11 +463,14 @@ function PageCreate() {
               </svg>
               Change thumbnail
             </button>
-            <button className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200">
+            <button 
+              className="mt-2 flex items-center text-sm text-gray-500 hover:bg-gray-100 rounded p-2 transition duration-200"
+              onClick={() => handleOpenModal('editVersion')}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
-              Edit version history
+              View version history
             </button>
           </div>
         </div>

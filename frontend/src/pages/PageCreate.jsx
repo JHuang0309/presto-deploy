@@ -206,6 +206,9 @@ function PageCreate() {
       setShowAlert(true);
     }
   }
+  const handleRearrangeSlides = () => {
+    console.log('Rearranged');
+  }
 
   const changeSlide = (direction) => {
     if (direction == 'next') {
@@ -247,6 +250,50 @@ function PageCreate() {
     }   
   }, [slideIndex, navigate]);
 
+  useEffect(() => {
+    if (!store) {
+      return;
+    }
+    const presIndex = store.presentations.findIndex(p => p.id === presId);
+    const presentation = store.presentations[presIndex]
+
+    if (presIndex !== -1) {
+      const currentSlide = presentation.versions[presentation.versions.length - 1].slides[slideIndex - 1];
+      const newSlide = {
+        ...currentSlide,
+        format: slideFormat,
+        elements: slideElements,
+
+      };
+      const newStore = {
+        ...store,
+        presentations: store.presentations.map((presentation, index) => {
+          if (index === presIndex) {
+              return {
+                  ...presentation,
+                  versions: presentation.versions.map((version, versionIndex) => {
+                      if (versionIndex === presentation.versions.length - 1) {
+                          return {
+                              ...version,
+                              slides: version.slides.map((slide, _slideIndex) => {
+                                  if (_slideIndex === (slideIndex - 1)) {
+                                      return newSlide;
+                                  }
+                                  return slide;
+                              }),
+                          };
+                      }
+                      return version;
+                  }),
+              };
+          }
+          return presentation;
+        }),
+      };
+      setStoreFn(newStore);
+    }
+  }, [slideElements, slideFormat])
+
   return (
     <>
       {showAlert && (
@@ -271,6 +318,8 @@ function PageCreate() {
           presTitle={presTitle}
           editThumbnail={handleEditThumbnail}
           presThumbnail={thumbnail}
+          rearrangeSlides={handleRearrangeSlides}
+          slideVersions={versions}
         />
       )}
       <div className='lg:flex lg:items-center lg:justify-between pb-6 pl-6 pr-6 border-b-2 border-gray-300 shadow-sm p-4'>
@@ -323,10 +372,10 @@ function PageCreate() {
           </span>
         </div>
       </div>
-      <div className='flex h-screen'>
+      <div className='flex'>
         {/* Main page body */}
         {isOpen && (
-          <aside className='flex flex-col p-6 px-3 py-4 overflow-y-auto md:w-60 sm:w-30'>
+          <aside className='flex flex-col p-6 px-3 py-4 md:w-60 sm:w-30'>
             <div>
               <button 
                 className='flex bg-[#e4627d] items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#eb7b91] dark:hover:bg-gray-700 w-full text-white mb-2 xs:text-xs sm:text-sm md:text-base'
@@ -440,7 +489,10 @@ function PageCreate() {
               </button>
             </div>
             <div className='sm:ml-4 flex'>
-              <button className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200 flex items-center'>
+              <button 
+                className='text-sm text-gray-900 hover:bg-gray-100 hover:bg-gray-100 rounded p-2 transition duration-200 flex items-center'
+                onClick={() => handleOpenModal('rearrangeSlides')}
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-1">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
                 </svg>

@@ -1,6 +1,6 @@
 const Slide = ({ elements, format }) => {
-  console.log(elements);
-  console.log(format);
+  // console.log(elements);
+  // console.log(format);
   if (elements == null || format == null) {
     return (
       <>

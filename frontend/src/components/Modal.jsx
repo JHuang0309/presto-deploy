@@ -8,6 +8,7 @@ import ModalBackgroundInput from './ModalBackgroundInput';
 import ModalTitleInput from './ModalTitleInput';
 import ModalThumbnailInput from './ModalThumbnailInput';
 import ModalRearrangeSlidesInput from './ModalRearrangeSlidesInput';
+import ModalVersionInput from './ModalVersionInput';
 import Alert from './Alert';
 
 
@@ -48,12 +49,16 @@ const Inputs = ({type, updateUserInput, title, thumbnail, slideVersions}) => {
     return (
       <ModalRearrangeSlidesInput updateUserInput={updateUserInput} slideVersions={slideVersions}/>
     );
+  } else if (type == 'editVersion') {
+    return (
+      <ModalVersionInput updateUserInput={updateUserInput} slideVersions={slideVersions}/>
+    );
   } else {
     console.log(`Error unknown add element button: ${type}`)
   }
 }
 
-const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle, editThumbnail, presThumbnail, rearrangeSlides, slideVersions }) => {
+const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle, editThumbnail, presThumbnail, rearrangeSlides, slideVersions, editVersion }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [modalType, setModalType] = useState(''); // tracks the type of modal
   const [buttonType, setButtonType] = useState(''); // tracks the button for the modal
@@ -83,6 +88,9 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
       setButtonType('Save');
     } else if (type == 'rearrangeSlides') {
       setModalType('Rearrange Slides');
+      setButtonType('Save');
+    } else if (type == 'editVersion') {
+      setModalType('Select Version');
       setButtonType('Save');
     }
   })
@@ -197,6 +205,9 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
       editThumbnail(thumbnail);
     } else if (type == 'rearrangeSlides') {
       rearrangeSlides(userInput);
+      onClose();
+    } else if (type == 'editVersion') {
+      editVersion(userInput);
       onClose();
     } else {
       handleInvalidInputs('Error unknown element type')

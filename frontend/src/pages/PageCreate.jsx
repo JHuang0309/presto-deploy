@@ -277,6 +277,9 @@ function PageCreate() {
     const presIndex = store.presentations.findIndex(p => p.id === presId);
     const presentation = store.presentations[presIndex];
     const versionIndex = presentation.versions.findIndex(v => v.versionId === version.version);
+    if (versionIndex == versions.length - 1) {
+      return;
+    }
     const selectedVersion = presentation.versions[versionIndex];
     const date = new Date();
     const formattedDate = date.toLocaleString();

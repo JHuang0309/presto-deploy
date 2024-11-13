@@ -40,8 +40,8 @@ const ModalThumbnailInput = ({ updateUserInput, thumbnail }) => {
     }
   };
   return (
-    <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-      <div className="sm:col-span-3">
+    <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-1">
+      <div className="sm:col-span-1">
         <label htmlFor="image" className="block text-sm/6 font-medium text-gray-900">
           Enter Thumbnail Image 
         </label>

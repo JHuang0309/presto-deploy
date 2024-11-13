@@ -7,10 +7,11 @@ import ModalCodeInput from './ModalCodeInput';
 import ModalBackgroundInput from './ModalBackgroundInput';
 import ModalTitleInput from './ModalTitleInput';
 import ModalThumbnailInput from './ModalThumbnailInput';
+import ModalRearrangeSlidesInput from './ModalRearrangeSlidesInput';
 import Alert from './Alert';
 
 
-const Inputs = ({type, updateUserInput, title, thumbnail}) => {
+const Inputs = ({type, updateUserInput, title, thumbnail, slideVersions}) => {
   if (type == 'textbox') {
     return (
       <ModalTextInput updateUserInput={updateUserInput}/>
@@ -43,14 +44,19 @@ const Inputs = ({type, updateUserInput, title, thumbnail}) => {
     return (
       <ModalThumbnailInput updateUserInput={updateUserInput} thumbnail={thumbnail}/>
     );
+  } else if (type == 'rearrangeSlides') {
+    return (
+      <ModalRearrangeSlidesInput updateUserInput={updateUserInput} slideVersions={slideVersions}/>
+    );
   } else {
     console.log(`Error unknown add element button: ${type}`)
   }
 }
 
-const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle, editThumbnail, presThumbnail }) => {
+const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle, editThumbnail, presThumbnail, rearrangeSlides, slideVersions }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [modalType, setModalType] = useState(''); // tracks the type of modal
+  const [buttonType, setButtonType] = useState(''); // tracks the button for the modal
   const [alertType, setAlertType] = useState('alert');
   const [alertMsg, setAlertMsg] = useState('');
   const [userInput, setUserInput] = useState({});
@@ -62,14 +68,22 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
     const addTypes = ['textbox', 'image', 'code', 'video']
     if (addTypes.includes(type)) {
       setModalType(`Add ${type}`);
+      setButtonType('Add');
     } else if (type == 'format') {
       setModalType('Format slide background');
+      setButtonType('Apply');
     } else if (type == 'deletePres') {
       setModalType('Delete presentation');
+      setButtonType('Delete');
     } else if (type == 'editTitle') {
       setModalType('Edit Title');
+      setButtonType('Save');
     } else if (type == 'editThumbnail') {
       setModalType('Edit Thumbnail');
+      setButtonType('Save');
+    } else if (type == 'rearrangeSlides') {
+      setModalType('Rearrange Slides');
+      setButtonType('Save');
     }
   })
 
@@ -181,6 +195,9 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
     } else if (type == 'editThumbnail') {
       const { thumbnail } = userInput
       editThumbnail(thumbnail);
+    } else if (type == 'rearrangeSlides') {
+      rearrangeSlides();
+      onClose();
     } else {
       handleInvalidInputs('Error unknown element type')
     }
@@ -212,7 +229,7 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
                   <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
                     {modalType}
                   </DialogTitle>
-                  <Inputs type={type} updateUserInput={updateUserInput} title={presTitle} thumbnail={presThumbnail}/>
+                  <Inputs type={type} updateUserInput={updateUserInput} title={presTitle} thumbnail={presThumbnail} slideVersions={slideVersions}/>
                 </div>
               </div>
             </div>
@@ -222,7 +239,7 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
                 onClick={() => handleModalProcess(type)}
                 className="inline-flex w-full justify-center rounded-md bg-[#e4627d] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#eb7b91] sm:ml-3 sm:w-auto"
               >
-                {modalType}
+                {buttonType}
               </button>
               <button
                 type="button"

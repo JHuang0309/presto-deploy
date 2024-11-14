@@ -129,8 +129,8 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
         handleInvalidInputs('Invalid width. Width must be at greater than 0px');
       } else if (height <= 0 || height == undefined) {
         handleInvalidInputs('Invalid height. Height must be at greater than 0px');
-      } else if (image == undefined || image == '') {
-        handleInvalidInputs('Invalid image. Image cannot be empty');
+      // } else if (image == undefined || image == '') {
+      //   handleInvalidInputs('Invalid image. Image cannot be empty');
       } else if (description == undefined || description == '') {
         handleInvalidInputs('Invalid description. Description cannot be empty');
       } else {

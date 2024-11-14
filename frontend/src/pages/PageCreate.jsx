@@ -136,14 +136,14 @@ function PageCreate() {
   const handleAddVideo = ({width, height, url, autoplay}) => {
     setSlideElements(elems => [
       ...elems,
-      <Video key={uuidv4()} width={width} height={height} url={url} autoplay={autoplay} position={[0,0]}/>
+      <Video key={uuidv4()} width={width} height={height} url={url} autoplay={autoplay}/>
     ]);
     setEditMade(true);
   };
   const handleAddCode = ({width, height, text, fontSize}) => {
     setSlideElements(elems => [
       ...elems,
-      <Code key={uuidv4()} width={width} height={height} code={text} size={fontSize} position={[0,0]}/>
+      <Code key={uuidv4()} width={width} height={height} code={text} size={fontSize}/>
     ]);
     setEditMade(true);
   };

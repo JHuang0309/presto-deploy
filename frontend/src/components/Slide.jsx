@@ -20,6 +20,8 @@ const Slide = ({ elements, format }) => {
 
   const Textboxes = elements.filter(element => element.props.text);
   const Images = elements.filter(element => element.props.image);
+  const Videos = elements.filter(element => element.props.autoplay);
+  const Codes = elements.filter(element => element.props.code);
 
   return (
     <>
@@ -31,6 +33,12 @@ const Slide = ({ elements, format }) => {
       {/* {JSON.stringify(Images)} */}
       {Images.map((image, index) => (
           <Image key={index} {...image.props} />
+        ))}
+      {Videos.map((video, index) => (
+          <Video key={index} {...video.props} />
+        ))}
+      {Codes.map((code, index) => (
+          <Code key={index} {...code.props} />
         ))}
       </div>
     </>

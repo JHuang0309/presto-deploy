@@ -386,6 +386,7 @@ function PageCreate() {
         }),
       };
       setStoreFn(newStore);
+      console.log('store set', newStore)
     }
   }, [slideElements, slideFormat]);
 

@@ -120,7 +120,7 @@ function PageCreate() {
   const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
     setSlideElements(elems => [
       ...elems,
-      <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour} position={elems.position}/>
+      <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour}/>
     ]);
     console.log(store);
     setEditMade(true);
@@ -129,7 +129,7 @@ function PageCreate() {
   const handleAddImage = ({width, height, image, description}) => {
     setSlideElements(elems => [
       ...elems,
-      <Image key={uuidv4()} width={width} height={height} image={image} description={description} position={[0,0]}/>
+      <Image key={uuidv4()} width={width} height={height} image={image} description={description}/>
     ]);
     setEditMade(true);
   };

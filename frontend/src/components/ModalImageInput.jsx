@@ -83,7 +83,7 @@ const ModalImageInput = ({ updateUserInput }) => {
         <label htmlFor="image" className="block text-sm/6 font-medium text-gray-900">
           Enter Image 
         </label>
-        <input
+        {/* <input
           id="image"
           name="image"
           type="text"
@@ -91,7 +91,8 @@ const ModalImageInput = ({ updateUserInput }) => {
           value={url}
           placeholder="Enter image URL"
           onChange={handleUrlChange}
-        />
+        /> */}
+        
         <input
           id="image-file"
           name="image-file"

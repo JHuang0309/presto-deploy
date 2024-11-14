@@ -116,31 +116,34 @@ function PageCreate() {
     setSlideFormat(formatObject);
     setEditMade(true);
   };
+
   const handleAddTextbox = ({width, height, text, fontSize, colour}) => {
     setSlideElements(elems => [
       ...elems,
-      <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour} />
+      <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour}/>
     ]);
+    console.log(store);
     setEditMade(true);
   };
+
   const handleAddImage = ({width, height, image, description}) => {
     setSlideElements(elems => [
       ...elems,
-      <Image key={uuidv4()} width={width} height={height} image={image} description={description} />
+      <Image key={uuidv4()} width={width} height={height} image={image} description={description}/>
     ]);
     setEditMade(true);
   };
   const handleAddVideo = ({width, height, url, autoplay}) => {
     setSlideElements(elems => [
       ...elems,
-      <Video key={uuidv4()} width={width} height={height} url={url} autoplay={autoplay} />
+      <Video key={uuidv4()} width={width} height={height} url={url} autoplay={autoplay}/>
     ]);
     setEditMade(true);
   };
   const handleAddCode = ({width, height, text, fontSize}) => {
     setSlideElements(elems => [
       ...elems,
-      <Code key={uuidv4()} width={width} height={height} code={text} size={fontSize} />
+      <Code key={uuidv4()} width={width} height={height} code={text} size={fontSize}/>
     ]);
     setEditMade(true);
   };
@@ -271,6 +274,7 @@ function PageCreate() {
       setAlertMsg(`Presentation saved successfully at ${formattedDate}`);
       setShowAlert(true);
     }
+    console.log(store);
   }
   const handleEditVersion = (version) => {
     if (!store || !versions || version.version == undefined) return;

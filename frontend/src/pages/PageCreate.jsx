@@ -81,7 +81,7 @@ function PageCreate() {
         .catch((error) => {
           localStorage.removeItem('token');
           navigate('/login');
-          console.log(error.response.data.error);
+          console.log(error);
         });
     }
   }, [token, navigate]);
@@ -152,7 +152,6 @@ function PageCreate() {
     newStore.presentations = newStore.presentations.filter(
       (presentation) => presentation.id !== presId
     );
-    
     setStoreFn(newStore);
     setIsModalOpen(false);
     navigate('/dashboard')
@@ -363,23 +362,23 @@ function PageCreate() {
         ...store,
         presentations: store.presentations.map((presentation, index) => {
           if (index === presIndex) {
-              return {
-                  ...presentation,
-                  versions: presentation.versions.map((version, versionIndex) => {
-                      if (versionIndex === presentation.versions.length - 1) {
-                          return {
-                              ...version,
-                              slides: version.slides.map((slide, _slideIndex) => {
-                                  if (_slideIndex === (slideIndex - 1)) {
-                                      return newSlide;
-                                  }
-                                  return slide;
-                              }),
-                          };
+            return {
+              ...presentation,
+              versions: presentation.versions.map((version, versionIndex) => {
+                if (versionIndex === presentation.versions.length - 1) {
+                  return {
+                    ...version,
+                    slides: version.slides.map((slide, _slideIndex) => {
+                      if (_slideIndex === (slideIndex - 1)) {
+                        return newSlide;
                       }
-                      return version;
-                  }),
-              };
+                      return slide;
+                    }),
+                  };
+                }
+                return version;
+              }),
+            };
           }
           return presentation;
         }),
@@ -432,13 +431,14 @@ function PageCreate() {
       <div className='lg:flex lg:items-center lg:justify-between pb-6 pl-6 pr-6 border-b-2 border-gray-300 shadow-sm p-4'>
         <div className="min-w-0 flex-1">
           <div className='flex items-end'>
-            <img src={thumbnail} className='max-h-[45px] mr-4 cursor-pointer' onClick={() => handleOpenModal('editThumbnail')}></img>
+            <img src={thumbnail} alt='thumbnail' className='max-h-[45px] mr-4 cursor-pointer' onClick={() => handleOpenModal('editThumbnail')}></img>
             <h2 className="text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight mb-2">
               {presTitle}
             </h2>
             <button 
               className='ml-2 pb-3'
               onClick={() => handleOpenModal('editTitle')}
+              data-testid="editTitleButton"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-gray-400">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
@@ -593,7 +593,7 @@ function PageCreate() {
                 </svg>
                 Prev
               </button>
-              <span className='ml-2 mr-2 text-gray-400 font-semibold'>
+              <span className='ml-2 mr-2 text-gray-400 font-semibold' data-testid="slide-index">
                 {slideIndex}
               </span>
               <button 

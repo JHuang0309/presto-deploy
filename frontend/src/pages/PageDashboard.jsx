@@ -6,7 +6,6 @@ import PresentationDetails from '../components/PresentationDetails.jsx';
 import PresentationList from '../components/PresentationList.jsx';
 import Alert from '../components/Alert.jsx';
 
-
 function PageDashboard({ token }) {
   const [store, setStore] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,10 +22,10 @@ function PageDashboard({ token }) {
 
   const navigate = useNavigate();
   useEffect(() => {
-    if (localStorage.getItem('token') == null) {
+    if (!token && localStorage.getItem('token') == null) {
       navigate('/login');
     }
-  }, [navigate]);
+  }, [token, navigate]);
 
   const setStoreFn = (newStore) => {
     axios.put(

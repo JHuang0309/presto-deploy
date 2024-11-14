@@ -45,7 +45,6 @@ function PageRegister({ setTokenFn }) {
 
   const register = (event) => {
     event.preventDefault();
-    // console.log(email, password, name);
     if (!validInputs()) {
       setShowAlert(true);
       return;

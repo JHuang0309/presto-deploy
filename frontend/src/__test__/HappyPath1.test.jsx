@@ -184,7 +184,132 @@ describe("Happy path", () => {
       </Router>
     );
 
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith('http://localhost:5005/store', {
+        headers: {Authorization: "Bearer mockToken"}
+      });
+    });
+    await waitFor(() => {
+      fireEvent.click(screen.getByTestId('editTitleButton'));
+    });
+
+    const titleInput = screen.getByPlaceholderText('Enter title...');
+    fireEvent.change(titleInput, { target: { value: 'I love COMP6080' } });
+
+    await waitFor(() => {
+      // Save the new title
+      fireEvent.click(screen.getByRole('button', { name: /save/i }));
+    });
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith('http://localhost:5005/store', {
+        headers: {Authorization: "Bearer mockToken"}
+      });
+    });
+
+    expect(screen.getByText('I love COMP6080')).toBeInTheDocument();
+
+    // User updates the thumbnail of the presentation successfully
+
+    const changeThumbnailBtn = screen.getByText(/Change thumbnail/i);
+    expect(changeThumbnailBtn).toBeInTheDocument();
+
+    await waitFor(() => {
+      fireEvent.click(changeThumbnailBtn);
+    });
+
+    const thumbnailInput = screen.getByPlaceholderText('Enter image URL');
+    const url = 'https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg'
+    fireEvent.change(thumbnailInput, { target: { value: url } });
     
+    await waitFor(() => {
+      // Save the new thumbnail
+      fireEvent.click(screen.getByRole('button', { name: /^Save$/ }));
+    });
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith('http://localhost:5005/store', {
+        headers: {Authorization: "Bearer mockToken"}
+      });
+    });
+
+    // const updatedThumbnail = screen.getByAltText('thumbnail');
+    // expect(updatedThumbnail).toHaveAttribute('src', 'https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg');
+
+    // User add slides and navigates them successfully
+
+    const addButton = screen.getByRole('button', { name: /Create new slide/i });
+    const slideIndexSpan = screen.getByTestId('slide-index');
+    await waitFor(() => {
+      expect(slideIndexSpan).toHaveTextContent('1');
+    });
+    await waitFor(() => {
+      fireEvent.click(addButton);
+      fireEvent.click(addButton);
+      fireEvent.click(addButton);
+    })
+    await waitFor(() => {
+      expect(slideIndexSpan).toHaveTextContent('4');
+    });
+
+    // User deletes presentation successfully
+    const deleteButton = screen.getByText(/Delete presentation/i);
+    await waitFor(() => {
+      fireEvent.click(deleteButton);
+    })
+
+    const confirmDeleteButton = screen.getByText(/^Delete$/);
+    await waitFor(() => {
+      fireEvent.click(confirmDeleteButton);
+    })
+
+    await waitFor(() => {
+      expect(axios.put).toHaveBeenCalledWith('http://localhost:5005/store', {
+        store: {
+          presentations: [],
+        },
+      }, 
+      {
+        headers: {Authorization: "Bearer mockToken"}
+      },);
+    });
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+    })
+
+    unmount();
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith('http://localhost:5005/store', {
+        headers: {Authorization: "Bearer mockToken"}
+      });
+    });
+    
+    await waitFor(() => {
+      expect(screen.queryByText("I love COMP6080")).not.toBeInTheDocument();
+    });
+
+    // User successfully logs out
+
+    const token = 'mockToken';
+    const setToken = vi.fn();
+
+    render(
+        <BrowserRouter>
+          <Logout token={token} setTokenFn={setToken} />
+        </BrowserRouter>
+    );
+
+    const logoutButton = screen.getByText(/Logout/i);
+    expect(logoutButton).toBeInTheDocument();
+
+    await waitFor(() => {
+      fireEvent.click(logoutButton);
+    });
+    
+    await waitFor(() => {
+      expect(setToken).toHaveBeenCalledWith(null);
+    });
 
   });
 });

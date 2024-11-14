@@ -1,4 +1,5 @@
 import Textbox from '../components/Textbox';
+import Image from '../components/Image';
 
 const Slide = ({ elements, format }) => {
   // console.log(elements);
@@ -16,6 +17,7 @@ const Slide = ({ elements, format }) => {
   }
 
   const Textboxes = elements.filter(element => element.props.text);
+  const Images = elements.filter(element => element.props.image);
 
   return (
     <>
@@ -23,6 +25,10 @@ const Slide = ({ elements, format }) => {
       {/* {JSON.stringify(Textboxes)} */}
       {Textboxes.map((textbox, index) => (
           <Textbox key={index} {...textbox.props} />
+        ))}
+      {/* {JSON.stringify(Images)} */}
+      {Images.map((image, index) => (
+          <Image key={index} {...image.props} />
         ))}
       </div>
     </>

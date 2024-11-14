@@ -122,7 +122,6 @@ function PageCreate() {
       ...elems,
       <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour}/>
     ]);
-    console.log(store);
     setEditMade(true);
   };
 
@@ -273,7 +272,6 @@ function PageCreate() {
       setAlertMsg(`Presentation saved successfully at ${formattedDate}`);
       setShowAlert(true);
     }
-    console.log(store);
   }
   const handleEditVersion = (version) => {
     if (!store || !versions || version.version == undefined) return;
@@ -302,6 +300,10 @@ function PageCreate() {
     };
     setStoreFn(newStore);
     setSlideIndex(1);
+  }
+  const handleUpdateElements = (updatedElements) => {
+    setSlideElements(updatedElements);
+    setEditMade(true);
   }
   const changeSlide = (direction) => {
     if (direction == 'next') {
@@ -384,6 +386,7 @@ function PageCreate() {
         }),
       };
       setStoreFn(newStore);
+      console.log('store set', newStore)
     }
   }, [slideElements, slideFormat]);
 
@@ -580,7 +583,7 @@ function PageCreate() {
           )}
         </button>
         <div className='flex-1 bg-gray-100 overflow-auto flex flex-col'>
-          <Slide elements={slideElements} format={slideFormat}/>
+          <Slide elements={slideElements} format={slideFormat} updateElements={handleUpdateElements}/>
           <div className='bg-white border-t-2 border-gray-300 shadow-sm p-4 flex flex-1 items-start min-w-[340px] sm:justify-between flex-col sm:flex-row'>
             <div className='flex items-center'>
               <button 

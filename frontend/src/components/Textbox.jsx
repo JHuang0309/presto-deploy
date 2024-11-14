@@ -1,13 +1,14 @@
 import { useState, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 
-const Textbox = ({ width, height, text, size, colour }) => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+const Textbox = ({ width, height, text, size, colour, position, updatePosition }) => {
+  const [positionState, setPositionState] = useState(position);
   const ref = useRef(null);
 
   const handleDragStop = (event, data) => {
-    setPosition({ x: data.x, y: data.y });
-    console.log("New position:", data.x, data.y); // Log the position to the console
+    setPositionState({ x: data.x, y: data.y });
+    const newPosition = { x: data.x, y: data.y }
+    updatePosition(newPosition);
   };
 
   return (

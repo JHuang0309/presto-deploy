@@ -1,5 +1,7 @@
 import Textbox from '../components/Textbox';
 import Image from '../components/Image';
+import Video from '../components/Video';
+import Code from '../components/Code';
 
 const Slide = ({ elements, format }) => {
   // console.log(elements);

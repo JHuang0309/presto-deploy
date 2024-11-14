@@ -4,8 +4,6 @@ import { Rnd } from 'react-rnd';
 const Textbox = ({ width, height, text, size, colour, position = { x: 0, y: 0 }, updatePosition }) => {
   const ref = useRef(null);
 
-  console.log(position);
-
   const handleDragStop = (event, data) => {
     const newPosition = { x: data.x, y: data.y }
     updatePosition(newPosition);

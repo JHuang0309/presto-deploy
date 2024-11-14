@@ -5,7 +5,6 @@ import Video from '../components/Video';
 import Code from '../components/Code';
 
 const Slide = ({ elements, format, updateElements }) => {
-  console.log('passed Elements', elements)
   // console.log(elements);
   // console.log(format);
 

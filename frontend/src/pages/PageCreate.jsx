@@ -121,6 +121,14 @@ function PageCreate() {
       ...elems,
       <Textbox key={uuidv4()} width={width} height={height} text={text} size={fontSize} colour={colour} />
     ]);
+    // const newStore = { ...store };
+    // const presIndex = newStore.presentations.findIndex(p => p.id === presId);
+    // newStore.presentations[presIndex].thumbnail = newThumbnail;
+    // setIsModalOpen(false);
+    // if (newThumbnail != undefined) {
+    //   setStoreFn(newStore);
+    // }
+    console.log(store);
     setEditMade(true);
   };
   const handleAddImage = ({width, height, image, description}) => {

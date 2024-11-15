@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@hello-pangea/dnd": "^17.0.0",
     "react-draggable": "^4.4.6",
     "react-rnd": "^10.4.13",
     "uuid": "^11.0.3"

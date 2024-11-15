@@ -72,7 +72,11 @@ const Slide = ({ elements, format, updateElements }) => {
           />
         ))}
       {Images.map((image, index) => (
-          <Image key={index} {...image.props} />
+          <Image
+            key={index}
+            {...image.props}
+            updatePosition={(newPosition) => updateElementPosition(index, newPosition)}  
+          />
         ))}
       {Videos.map((video, index) => (
           <Video key={index} {...video.props} />

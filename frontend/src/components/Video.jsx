@@ -10,10 +10,8 @@ const Video = ({ width, height, url, autoplay }) => {
       <div className={`w-${width} h-${height}`}>
         <iframe width={`${width}`} height={`${height}`} src={`${url}?${autoplayToggle}`}>
         </iframe>
-      
       </div>
     </Rnd>
-    
   );
 };
 

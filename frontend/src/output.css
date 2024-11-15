@@ -1785,6 +1785,11 @@ select {
   border-color: rgb(228 98 125 / var(--tw-border-opacity));
 }
 
+.focus\:border-indigo-500:focus {
+  --tw-border-opacity: 1;
+  border-color: rgb(99 102 241 / var(--tw-border-opacity));
+}
+
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -1808,6 +1813,11 @@ select {
 .focus\:ring-\[\#eb7b91\]:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(235 123 145 / var(--tw-ring-opacity));
+}
+
+.focus\:ring-indigo-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(99 102 241 / var(--tw-ring-opacity));
 }
 
 .focus-visible\:outline:focus-visible {

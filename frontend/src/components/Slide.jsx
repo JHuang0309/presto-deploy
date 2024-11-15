@@ -5,6 +5,7 @@ import Video from '../components/Video';
 import Code from '../components/Code';
 
 const Slide = ({ elements, format, updateElements }) => {
+  // transition property is also available
   const [slideFormat, setSlideFormat] = useState({});
   useEffect(() => {
     const jsxFormat = {}

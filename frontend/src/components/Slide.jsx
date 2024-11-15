@@ -64,21 +64,21 @@ const Slide = ({ elements, format, updateElements }) => {
         className='aspect-[16/9] max-w-full min-w-[250px] max-h-[800px] m-10'
         style={{...slideFormat,}}
       >
-      {Textboxes.map((textbox, index) => (
+        {Textboxes.map((textbox, index) => (
           <Textbox 
             key={index} 
             {...textbox.props} 
             updatePosition={(newPosition) => updateElementPosition(index, newPosition)}  
           />
         ))}
-      {Images.map((image, index) => (
+        {Images.map((image, index) => (
           <Image
             key={index}
             {...image.props}
             // updatePosition={(newPosition) => updateElementPosition(index, newPosition)}  
           />
         ))}
-      {Videos.map((video, index) => (
+        {Videos.map((video, index) => (
           <Video
             key={index}
             {...video.props}
@@ -86,7 +86,7 @@ const Slide = ({ elements, format, updateElements }) => {
           />
           
         ))}
-      {Codes.map((code, index) => (
+        {Codes.map((code, index) => (
           <Code
             key={index}
             {...code.props}

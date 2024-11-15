@@ -1,0 +1,5 @@
+- Consistent colour scheme
+- Icons such that users easily identify what certian buttons can be used for
+- Alt text fields used on images to cater toward those that may be sight-impaired
+- Overall consistent and aesthetic styling
+- Intuitive laytout (e.g. back to dashboard button in top left of slide page)

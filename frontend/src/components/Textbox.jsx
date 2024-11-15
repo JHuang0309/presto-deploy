@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { Rnd } from 'react-rnd';
 
 const Textbox = ({ width, height, text, size, colour, position = { x: 0, y: 0 }, updatePosition }) => {

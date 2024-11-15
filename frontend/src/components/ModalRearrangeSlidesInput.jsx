@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import MiniSlide from "./MiniSlide";
 
 const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
-  if (!slideVersions) {
-    return;
-  }
-  const [slides, setSlides] = useState(
-    slideVersions[slideVersions.length - 1].slides.map((slide, index) => ({
-      ...slide,
-      slideNumber: index + 1,
-    }))
-  );
+  const [slides, setSlides] = useState([]);
+
+  useEffect(() => {
+    if (slideVersions) {
+      setSlides(slideVersions[slideVersions.length - 1].slides.map((slide, index) => ({
+        ...slide,
+        slideNumber: index + 1,
+      })))
+    }
+  }, []);
 
   const saveRearrangement = (newSlides) => {
     setSlides(newSlides);

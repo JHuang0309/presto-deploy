@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const ModalImageInput = ({ updateUserInput }) => {
-  const [url, setUrl] = useState('');
+  // const [url, setUrl] = useState('');
 
   const handleInput = (event) => {
     const { name, value } = event.target;
@@ -27,13 +27,13 @@ const ModalImageInput = ({ updateUserInput }) => {
     }
   }
 
-  const handleUrlChange = (event) => {
-    const newUrl = event.target.value;
-    setUrl(newUrl);
-    if (newUrl) {
-      handleConvertUrlToBase64(newUrl);
-    }
-  }
+  // const handleUrlChange = (event) => {
+  //   const newUrl = event.target.value;
+  //   setUrl(newUrl);
+  //   if (newUrl) {
+  //     handleConvertUrlToBase64(newUrl);
+  //   }
+  // }
 
   const handleConvertUrlToBase64 = async (url) => {
     try {

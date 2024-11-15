@@ -124,7 +124,8 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
         onClose();
       }
     } else if (type == 'image') {
-      const {width, height, image, description} = userInput;
+      const {width, height, description} = userInput;
+      // const {width, height, image, description} = userInput;
       if (width <= 0 || width == undefined) {
         handleInvalidInputs('Invalid width. Width must be at greater than 0px');
       } else if (height <= 0 || height == undefined) {

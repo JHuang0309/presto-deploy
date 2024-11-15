@@ -11,7 +11,7 @@ const Video = ({ width, height, url, autoplay }) => {
         <iframe width={`${width}`} height={`${height}`} src={`${url}?${autoplayToggle}`}>
         </iframe>
       
-    </div>
+      </div>
     </Rnd>
     
   );

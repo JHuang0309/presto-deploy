@@ -1,5 +1,8 @@
 const ModalVersionInput = ({ updateUserInput, slideVersions }) => {
-
+  // console.log(slideVersions);
+  if (!slideVersions) {
+    return;
+  }
   const handleInput = (event) => {
     const { name, value } = event.target;
     updateUserInput(prevInput => ({
@@ -24,6 +27,7 @@ const ModalVersionInput = ({ updateUserInput, slideVersions }) => {
                 className="text-[#eb7b91]"
                 value={version.versionId}
                 onChange={handleInput}
+                data-testid={index}
               />
             </div>
           </li>

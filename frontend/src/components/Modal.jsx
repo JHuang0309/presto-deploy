@@ -9,6 +9,7 @@ import ModalTitleInput from './ModalTitleInput';
 import ModalThumbnailInput from './ModalThumbnailInput';
 import ModalRearrangeSlidesInput from './ModalRearrangeSlidesInput';
 import ModalVersionInput from './ModalVersionInput';
+import ModalTransitionInput from './ModalTransitionInput';
 import Alert from './Alert';
 
 
@@ -53,12 +54,16 @@ const Inputs = ({type, updateUserInput, title, thumbnail, slideVersions}) => {
     return (
       <ModalVersionInput updateUserInput={updateUserInput} slideVersions={slideVersions}/>
     );
+  } else if (type == 'transition') {
+    return (
+      <ModalTransitionInput updateUserInput={updateUserInput} />
+    );
   } else {
     console.log(`Error unknown add element button: ${type}`)
   }
 }
 
-const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle, editThumbnail, presThumbnail, rearrangeSlides, slideVersions, editVersion }) => {
+const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode, addFormat, deletePres, editTitle, presTitle, editThumbnail, presThumbnail, rearrangeSlides, slideVersions, editVersion, addTransition }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [modalType, setModalType] = useState(''); // tracks the type of modal
   const [buttonType, setButtonType] = useState(''); // tracks the button for the modal
@@ -92,6 +97,9 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
     } else if (type == 'editVersion') {
       setModalType('Select Version');
       setButtonType('Save');
+    } else if (type == 'transition') {
+      setModalType('Apply Transition');
+      setButtonType('Apply');;
     }
   })
 
@@ -124,7 +132,8 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
         onClose();
       }
     } else if (type == 'image') {
-      const {width, height, image, description} = userInput;
+      const {width, height, description} = userInput;
+      // const {width, height, image, description} = userInput;
       if (width <= 0 || width == undefined) {
         handleInvalidInputs('Invalid width. Width must be at greater than 0px');
       } else if (height <= 0 || height == undefined) {
@@ -208,6 +217,9 @@ const Modal = ({ type, onClose, isOpen, addTextbox, addImage, addVideo, addCode,
       onClose();
     } else if (type == 'editVersion') {
       editVersion(userInput);
+      onClose();
+     } else if (type == 'transition') {
+      addTransition(userInput);
       onClose();
     } else {
       handleInvalidInputs('Error unknown element type')

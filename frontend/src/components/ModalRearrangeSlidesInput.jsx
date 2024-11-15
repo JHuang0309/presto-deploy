@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import MiniSlide from "./MiniSlide";
 
 const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
-  const [slides, setSlides] = useState(
-    slideVersions[slideVersions.length - 1].slides.map((slide, index) => ({
-      ...slide,
-      slideNumber: index + 1,
-    }))
-  );
+  const [slides, setSlides] = useState([]);
+
+  useEffect(() => {
+    if (slideVersions) {
+      setSlides(slideVersions[slideVersions.length - 1].slides.map((slide, index) => ({
+        ...slide,
+        slideNumber: index + 1,
+      })))
+    }
+  }, []);
 
   const saveRearrangement = (newSlides) => {
     setSlides(newSlides);
@@ -63,6 +67,7 @@ const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                       className="flex justify-between gap-x-6 py-5 sm:justify-between"
+                      data-testid={`slide-item-${index}`}
                     >
                       <div className="flex gap-x-4">
                         <MiniSlide format={slide.format} slideNumber={slide.slideNumber} />

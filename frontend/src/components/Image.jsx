@@ -1,7 +1,6 @@
-import { useState, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 
-const Image = ({ width, height, image, description }) => {
+const Image = ({ width, height, image, description}) => {
 
   return (
     <Rnd>

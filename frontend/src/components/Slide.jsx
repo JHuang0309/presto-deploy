@@ -5,6 +5,7 @@ import Video from '../components/Video';
 import Code from '../components/Code';
 
 const Slide = ({ elements, format, updateElements }) => {
+  // transition property is also available
   const [slideFormat, setSlideFormat] = useState({});
   useEffect(() => {
     const jsxFormat = {}
@@ -64,23 +65,34 @@ const Slide = ({ elements, format, updateElements }) => {
         className='aspect-[16/9] max-w-full min-w-[250px] max-h-[800px] m-10'
         style={{...slideFormat,}}
       >
-      {/* {JSON.stringify(Textboxes)} */}
-      {Textboxes.map((textbox, index) => (
+        {Textboxes.map((textbox, index) => (
           <Textbox 
             key={index} 
             {...textbox.props} 
             updatePosition={(newPosition) => updateElementPosition(index, newPosition)}  
           />
         ))}
-      {/* {JSON.stringify(Images)} */}
-      {Images.map((image, index) => (
-          <Image key={index} {...image.props} />
+        {Images.map((image, index) => (
+          <Image
+            key={index}
+            {...image.props}
+            // updatePosition={(newPosition) => updateElementPosition(index, newPosition)}  
+          />
         ))}
-      {Videos.map((video, index) => (
-          <Video key={index} {...video.props} />
+        {Videos.map((video, index) => (
+          <Video
+            key={index}
+            {...video.props}
+            // updatePosition={(newPosition) => updateElementPosition(index, newPosition)}  
+          />
+          
         ))}
-      {Codes.map((code, index) => (
-          <Code key={index} {...code.props} />
+        {Codes.map((code, index) => (
+          <Code
+            key={index}
+            {...code.props}
+            // updatePosition={(newPosition) => updateElementPosition(index, newPosition)}
+          />
         ))}
       </div>
     </>

@@ -3,8 +3,8 @@ const ModalTransitionInput = ({ updateUserInput }) => {
   const handleInput = (event) => {
     const { name, value } = event.target;
     updateUserInput(prevInput => ({
-    ...prevInput,
-    [name]: value
+      ...prevInput,
+      [name]: value
     }));
   }
   

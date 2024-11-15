@@ -5,7 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 
 const mockAddTextbox = vi.fn();
 const mockOnClose = vi.fn();
-const mockAddImage = vi.fn();
 
 describe('Modal component with text input type', () => {
     beforeEach(() => {

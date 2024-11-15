@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const ModalImageInput = ({ updateUserInput }) => {
-  const [url, setUrl] = useState('');
+  const [setUrl] = useState('');
 
   const handleInput = (event) => {
     const { name, value } = event.target;
@@ -27,31 +27,31 @@ const ModalImageInput = ({ updateUserInput }) => {
     }
   }
 
-  const handleUrlChange = (event) => {
-    const newUrl = event.target.value;
-    setUrl(newUrl);
-    if (newUrl) {
-      handleConvertUrlToBase64(newUrl);
-    }
-  }
+  // const handleUrlChange = (event) => {
+  //   const newUrl = event.target.value;
+  //   setUrl(newUrl);
+  //   if (newUrl) {
+  //     handleConvertUrlToBase64(newUrl);
+  //   }
+  // }
 
-  const handleConvertUrlToBase64 = async (url) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result;
-        updateUserInput(prevInput => ({
-          ...prevInput,
-          'image': base64
-        }));
-      };
-      reader.readAsDataURL(blob);
-    } catch (error) {
-      console.error('Error fetching the image:', error);
-    }
-  };
+  // const handleConvertUrlToBase64 = async (url) => {
+  //   try {
+  //     const response = await fetch(url);
+  //     const blob = await response.blob();
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       const base64 = reader.result;
+  //       updateUserInput(prevInput => ({
+  //         ...prevInput,
+  //         'image': base64
+  //       }));
+  //     };
+  //     reader.readAsDataURL(blob);
+  //   } catch (error) {
+  //     console.error('Error fetching the image:', error);
+  //   }
+  // };
 
   return (
     <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">

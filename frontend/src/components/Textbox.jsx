@@ -1,10 +1,11 @@
 import { useRef } from 'react';
 import { Rnd } from 'react-rnd';
+import { useRef } from 'react';
 
 const Textbox = ({ width, height, text, size, colour, position = { x: 0, y: 0 }, updatePosition }) => {
   const ref = useRef(null);
 
-  const handleDragStop = (event, data) => {
+  const handleDragStop = (data) => {
     const newPosition = { x: data.x, y: data.y }
     updatePosition(newPosition);
   };

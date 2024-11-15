@@ -64,7 +64,6 @@ const Slide = ({ elements, format, updateElements }) => {
         className='aspect-[16/9] max-w-full min-w-[250px] max-h-[800px] m-10'
         style={{...slideFormat,}}
       >
-      {/* {JSON.stringify(Textboxes)} */}
       {Textboxes.map((textbox, index) => (
           <Textbox 
             key={index} 
@@ -72,7 +71,6 @@ const Slide = ({ elements, format, updateElements }) => {
             updatePosition={(newPosition) => updateElementPosition(index, newPosition)}  
           />
         ))}
-      {/* {JSON.stringify(Images)} */}
       {Images.map((image, index) => (
           <Image key={index} {...image.props} />
         ))}

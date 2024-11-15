@@ -301,6 +301,51 @@ function PageCreate() {
     setStoreFn(newStore);
     setSlideIndex(1);
   }
+  const handleAddTransition = (transition) => {
+    if (transition == undefined) {
+      return;
+    }
+    const presIndex = store.presentations.findIndex(p => p.id === presId);
+    const presentation = store.presentations[presIndex]
+
+    if (presIndex !== -1) {
+      const currentSlide = presentation.versions[presentation.versions.length - 1].slides[slideIndex - 1];
+      const newSlide = {
+        ...currentSlide,
+        format: slideFormat,
+        elements: slideElements,
+        transition: transition,
+      };
+      const newStore = {
+        ...store,
+        presentations: store.presentations.map((presentation, index) => {
+          if (index === presIndex) {
+            return {
+              ...presentation,
+              versions: presentation.versions.map((version, versionIndex) => {
+                if (versionIndex === presentation.versions.length - 1) {
+                  return {
+                    ...version,
+                    slides: version.slides.map((slide, _slideIndex) => {
+                      if (_slideIndex === (slideIndex - 1)) {
+                        return newSlide;
+                      }
+                      return slide;
+                    }),
+                  };
+                }
+                return version;
+              }),
+            };
+          }
+          return presentation;
+        }),
+      };
+      setStoreFn(newStore);
+      setEditMade(true);
+      console.log(newStore);
+    }
+  }
   const handleUpdateElements = (updatedElements) => {
     setSlideElements(updatedElements);
     setEditMade(true);
@@ -427,6 +472,7 @@ function PageCreate() {
           rearrangeSlides={handleRearrangeSlides}
           slideVersions={versions}
           savePresentation={handleSavePresentation}
+          addTransition={handleAddTransition}
           editVersion={handleEditVersion}
         />
       )}
@@ -550,7 +596,10 @@ function PageCreate() {
               </button>
             </div>
             <div>
-              <button className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 w-full mb-2 xs:text-xs sm:text-sm md:text-base'>
+              <button 
+                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 w-full mb-2 xs:text-xs sm:text-sm md:text-base'
+                onClick={() => handleOpenModal('transition')}
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-1">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 0 1 0 1.954l-7.108 4.061A1.125 1.125 0 0 1 3 16.811V8.69ZM12.75 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 0 1 0 1.954l-7.108 4.061a1.125 1.125 0 0 1-1.683-.977V8.69Z" />
                 </svg>

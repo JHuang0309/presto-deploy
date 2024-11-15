@@ -3,6 +3,9 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import MiniSlide from "./MiniSlide";
 
 const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
+  if (!slideVersions) {
+    return;
+  }
   const [slides, setSlides] = useState(
     slideVersions[slideVersions.length - 1].slides.map((slide, index) => ({
       ...slide,
@@ -63,6 +66,7 @@ const ModalRearrangeSlidesInput = ({ updateUserInput, slideVersions }) => {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                       className="flex justify-between gap-x-6 py-5 sm:justify-between"
+                      data-testid={`slide-item-${index}`}
                     >
                       <div className="flex gap-x-4">
                         <MiniSlide format={slide.format} slideNumber={slide.slideNumber} />

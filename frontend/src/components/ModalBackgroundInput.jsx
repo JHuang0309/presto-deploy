@@ -182,6 +182,7 @@ const ModalBackgroundInput = ({ updateUserInput }) => {
             type="radio"
             name="fillType"
             value="solid"
+            aria-label="Solid fill"
             className="form-radio text-[#e4627d] focus:ring-[#eb7b91] mr-2"
             onChange={() => setFormat('solid')}
           />
@@ -192,6 +193,7 @@ const ModalBackgroundInput = ({ updateUserInput }) => {
             type="radio"
             name="fillType"
             value="gradient"
+            aria-label="Gradient fill"
             className="form-radio text-[#e4627d] focus:ring-[#eb7b91] mr-2"
             onChange={() => setFormat('gradient')}
           />
@@ -202,6 +204,7 @@ const ModalBackgroundInput = ({ updateUserInput }) => {
             type="radio"
             name="fillType"
             value="image"
+            aria-label="Picture fill"
             className="form-radio text-[#e4627d] focus:ring-[#eb7b91] mr-2"
             onChange={() => setFormat('image')}
           />

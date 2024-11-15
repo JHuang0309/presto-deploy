@@ -65,7 +65,7 @@ const ModalBackgroundInput = ({ updateUserInput }) => {
     if (select == 'gradient') {
       updateUserInput(prevInput => ({
         ...prevInput,
-        'gradientDirection' : 'top to down'
+        'gradientDirection' : 'top-down'
       }));
     }
   }
@@ -92,7 +92,7 @@ const ModalBackgroundInput = ({ updateUserInput }) => {
       case 'gradient':
         updateUserInput(prevInput => ({
           ...prevInput,
-          'gradientDirection': 'top to down'
+          'gradientDirection': 'top-down'
         }));
         return (
           <>

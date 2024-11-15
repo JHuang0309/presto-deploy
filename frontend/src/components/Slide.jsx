@@ -5,8 +5,23 @@ import Video from '../components/Video';
 import Code from '../components/Code';
 
 const Slide = ({ elements, format, updateElements }) => {
-  // console.log(elements);
-  // console.log(format);
+  const [slideFormat, setSlideFormat] = useState({});
+  useEffect(() => {
+    const jsxFormat = {}
+    if (format.format === "solid") {
+      jsxFormat.backgroundColor = format.colour;
+    } else if (format.format === "gradient") {
+      const gradientDirection = 
+        format.gradientDirection === "left-right" ? "to right" :
+          format.gradientDirection === "top-down" ? "to bottom" : "to right";
+      jsxFormat.background = `linear-gradient(${gradientDirection}, ${format.startColour}, ${format.endColour})`;
+    } else if (format.format === "image") {
+      jsxFormat.backgroundImage = `url(${format.image})`;
+      jsxFormat.backgroundSize = "cover";
+      jsxFormat.backgroundPosition = "center";
+    }
+    setSlideFormat(jsxFormat);
+  }, [format]);
 
   const [elementsState, setElementsState] = useState(elements);
   useEffect(() => {
@@ -31,7 +46,8 @@ const Slide = ({ elements, format, updateElements }) => {
   if (elements == null || format == null) {
     return (
       <>
-        <div className='bg-white aspect-[16/9] max-w-full min-w-[250px] max-h-[800px] m-10'>
+        <div 
+          className='bg-white aspect-[16/9] max-w-full min-w-[250px] max-h-[800px] m-10'>
         </div>
       </>
     );
@@ -44,7 +60,10 @@ const Slide = ({ elements, format, updateElements }) => {
 
   return (
     <>
-      <div className='bg-white aspect-[16/9] max-w-full min-w-[250px] max-h-[800px] m-10'>
+      <div 
+        className='aspect-[16/9] max-w-full min-w-[250px] max-h-[800px] m-10'
+        style={{...slideFormat,}}
+      >
       {/* {JSON.stringify(Textboxes)} */}
       {Textboxes.map((textbox, index) => (
           <Textbox 

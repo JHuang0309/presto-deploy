@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 const MiniSlide = ({ format, slideNumber }) => {
   const [slideFormat, setSlideFormat] = useState({});
-
   useEffect(() => {
     const jsxFormat = {}
     if (format.format === "solid") {
@@ -9,7 +8,7 @@ const MiniSlide = ({ format, slideNumber }) => {
     } else if (format.format === "gradient") {
       const gradientDirection = 
         format.gradientDirection === "left-right" ? "to right" :
-          format.gradientDirection === "top to down" ? "to bottom" : "to right";
+          format.gradientDirection === "top-down" ? "to bottom" : "to right";
       jsxFormat.background = `linear-gradient(${gradientDirection}, ${format.startColour}, ${format.endColour})`;
     } else if (format.format === "image") {
       jsxFormat.backgroundImage = `url(${format.image})`;

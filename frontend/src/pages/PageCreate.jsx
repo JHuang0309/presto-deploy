@@ -25,7 +25,7 @@ function PageCreate() {
   const [slideIndex, setSlideIndex] = useState(slideNumber);
   const [numSlides, setNumSlides] = useState(1);
   const [slideElements, setSlideElements] = useState(null);
-  const [slideFormat, setSlideFormat] = useState(null);
+  const [slideFormat, setSlideFormat] = useState({format: 'solid', colour: '#FFFFFF'});
   const [lastSaveTime, setLastSaveTime] = useState(null);
   const [editMade, setEditMade] = useState(false);
   const navigate = useNavigate();
@@ -386,7 +386,6 @@ function PageCreate() {
         }),
       };
       setStoreFn(newStore);
-      console.log('store set', newStore)
     }
   }, [slideElements, slideFormat]);
 
